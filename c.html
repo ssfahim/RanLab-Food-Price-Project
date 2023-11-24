@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 2px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .scrollable {
+            max-height: 250px;
+            overflow-y: scroll;
+            /* margin-left: 5px; */
+            margin-right: calc(80% );
+            width: 30%;
+        }
+        .scrollable::-webkit-scrollbar {
+            width: 15px; /* Set the width of the scrollbar */
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background-color: #888; /* Set the color of the thumb */
+            border-radius: 5px; /* Set the border-radius of the thumb */
+        }
+
+        .scrollable::-webkit-scrollbar-thumb:hover {
+            background-color: #555; /* Set the color of the thumb on hover */
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background-color: #f2f2f2; /* Set the color of the track */
+        }
+
+        .scrollable::-webkit-scrollbar-track:hover {
+            background-color: #ddd; /* Set the color of the track on hover */
+        }
+
+
+        #selectedTable {
+            margin-top: 20px;
+        }
+        .selectedTable td {
+            position: relative;
+        }
+
+        .heatmap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="scrollable">
+    <table id="csvTable">
+        <!-- Table header -->
+        <thead>
+            <tr>
+                <!-- <th></th>  -->
+            </tr>
+        </thead>
+        <!-- Table content will be dynamically generated here -->
+    </table>
+</div>
+
+<div>
+    <label for="viewBy">View by:</label>
+    <select id="viewBy" onchange="updateAndVisualize()">
+        <option value="yearlyStan">Yearly Standard Price</option>
+        <option value="yearly">Yearly Store Price</option>
+        <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
+        <option value="monthly">Monthly Store Price (Past 12 months)</option>
+    </select>
+</div>
+
+<button onclick="updateAndVisualize()">Update & Visualize</button>
+<button onclick="selectAll()">Select All</button>
+<button onclick="deselectAll()">Deselect All</button>
+
+<div id="selectedTable"></div>
+<div id="chart"></div>
+
+<script>
+    // Function to read and parse CSV file
+    function readCSV(file) {
+        var rawFile = new XMLHttpRequest();
+        var allText;
+
+        rawFile.open("GET", file, false);
+        rawFile.onreadystatechange = function () {
+            if (rawFile.readyState === 4) {
+                if (rawFile.status === 200 || rawFile.status == 0) {
+                    allText = rawFile.responseText;
+                }
+            }
+        };
+        rawFile.send(null);
+        return allText;
+    }
+
+    // Function to populate the table with CSV data
+    function populateTable(csv) {
+        var lines = csv.split("\n");
+        var table = document.getElementById("csvTable");
+
+        for (var i = 0; i < lines.length; i++) {
+            var cells = lines[i].split(",");
+            if (cells.length >= 2) { // Make sure there are at least two columns
+                var row = table.insertRow(-1);
+
+                // Add checkbox column
+                var cellCheckbox = row.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = row.insertCell(-1);
+                cellProduct.innerHTML = cells[0];
+
+                // Add unit of measurement column
+                // var cellUnit = row.insertCell(-1);
+                // cellUnit.innerHTML = cells[1];
+
+                // Add columns with values
+                // for (var j = 2; j < cells.length; j++) {
+                //     var cell = row.insertCell(-1);
+                //     cell.innerHTML = cells[j];
+                // }
+            }
+        }
+    }
+
+    
+    // Function to update and visualize selected items
+    function updateAndVisualize() {
+        var selectedTable = document.getElementById("selectedTable");
+        selectedTable.innerHTML = ""; // Clear previous content
+
+        var selectedRows = document.querySelectorAll("#csvTable input:checked");
+        if (selectedRows.length === 0) {
+            alert("Please select at least one item.");
+            return;
+        }
+
+        // Determine the file based on the selected "View by" option
+        var viewBy = document.getElementById("viewBy").value;
+        var csvFile;
+
+        switch (viewBy) {
+            case "yearlyStan":
+                var csvFile2 = 'YearlyStandard.csv';
+                var csvData2 = readCSV(csvFile2);
+                var lines = csvData2.split("\n");
+                break;
+            case "yearly":
+                var csvFile = 'Book1.csv';
+                var csvData = readCSV(csvFile);
+                var lines = csvData.split("\n");
+                break;
+            case "monthlyStan":
+                var csvFile3 = 'MonthlyStandard.csv';
+                var csvData3 = readCSV(csvFile3);
+                var lines = csvData3.split("\n");
+                break;
+            case "monthly":
+                var csvFile1 = 'Month.csv';
+                var csvData1 = readCSV(csvFile1);
+                var lines = csvData1.split("\n");
+                break;
+            default:
+                csvFile = 'YearlyStandard.csv'; // Default value
+                var csvData = readCSV(csvFile);
+                var lines = csvData.split("\n");
+        }
+
+        // Read the CSV file
+        // var csvData = readCSV(csvFile);
+
+        // Create a new table with specified headers
+        var newTable = document.createElement("table");
+        newTable.classList.add("selectedTable");
+
+        var headerRow = newTable.insertRow(-1);
+        var headers;
+
+        if (viewBy.includes("yearly")) {
+            headers = ["Product", "Unit of Measurement", "Sep-2017", "Sep-2018", "Sep-2019", "Sep-2020", "Sep-2021", "Sep-2022", "Sep-2023"];
+        } else {
+            // Assuming it's "monthly" option
+            headers = ["Product", "Unit of Measurement", "Oct-2022", "Nov-2022", "Dec-2022", "Jan-2023", "Feb-2023", "Mar-2023", "Apr-2023", "May-2023", "Jun-2023", "Jul-2023", "Aug-2023", "Sep-2023"];
+        }
+
+        for (var i = 0; i < headers.length; i++) {
+            var cell = headerRow.insertCell(-1);
+            cell.innerHTML = headers[i];
+        }
+
+        // Add selected rows with all columns and values
+        for (var j = 0; j < selectedRows.length; j++) {
+            var selectedRow = selectedRows[j].parentNode.parentNode;
+            var product = selectedRow.cells[1].innerHTML;
+
+            var newRow = newTable.insertRow(-1);
+
+            for (var k = 1; k < selectedRow.cells.length; k++) {
+                var cell = newRow.insertCell(-1);
+                cell.innerHTML = selectedRow.cells[k].innerHTML;
+            }
+
+            // Retrieve all data for the selected item from the CSV file
+            // var lines = csvData.split("\n");
+
+            for (var m = 0; m < lines.length; m++) {
+                var cells = lines[m].split(",");
+                if (cells.length >= 2 && cells[0] === product) {
+                    for (var n = 1; n < cells.length; n++) {
+                        var cell = newRow.insertCell(-1);
+                        cell.innerHTML = cells[n];
+                    }
+                    break;
+                }
+            }
+
+            // Add a heat map to each row
+            addHeatMapToRow(newRow);
+        }
+
+        selectedTable.appendChild(newTable);
+
+        // Create Plotly marker+line chart
+        if (viewBy ==="yearly") {
+            createPlot(selectedRows, csvData);
+        } 
+        else if(viewBy === "yearlyStan") {
+            createPlot(selectedRows, csvData2);
+        }
+        else if(viewBy === "monthlyStan") {
+            createMonthlyPlot(selectedRows, csvData3);
+        }
+        else if(viewBy === "monthly") {
+            createMonthlyPlot(selectedRows, csvData1);
+        }
+    }
+
+    function createMonthlyPlot(selectedRows, csvData1) {
+    // Create a data array for Plotly
+        var plotData = [];
+
+        // Get the header row to extract dates
+        var headerRow = selectedRows[0].parentNode.parentNode;
+        var dates = [];
+        for (var k = 2; k < headerRow.cells.length; k++) {
+            dates.push(headerRow.cells[k].textContent.trim()); // Use textContent to get the actual content and trim any extra whitespaces
+        }
+
+        // Add traces for selected products
+        for (var j = 0; j < selectedRows.length; j++) {
+            var selectedRow = selectedRows[j].parentNode.parentNode;
+            var product = selectedRow.cells[1].textContent.trim(); // Use textContent to get the actual content and trim any extra whitespaces
+
+            // Use getMonthlyProductData to get the data for the product
+            var productData = getMonthlyProductData(product,csvData1);
+
+            if (productData) {
+                var trace = {
+                    x: productData.dates,
+                    y: productData.prices,
+                    type: 'scatter',
+                    mode: 'markers+lines',
+                    name: product
+                };
+
+                plotData.push(trace);
+            }
+        }
+
+        // Layout for the plot
+        var layout = {
+            title: 'Product Prices Over Time (Monthly)',
+            xaxis: {
+                title: 'Time Period',
+                tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], // Set tick values to all months
+                ticktext: ['Oct-2022', 'Nov-2022', 'Dec-2022', 'Jan-2023', 'Feb-2023', 'Mar-2023', 'Apr-2023', 'May-2023', 'Jun-2023', 'Jul-2023', 'Aug-2023', 'Sep-2023'], // Set tick text to display specific months
+                zeroline : true,
+                zerolinewidth: 2,
+                zerolinecolor: 'black'
+            },
+            yaxis: {
+                title: 'Price in dollars(CAD)',
+                zeroline : true,
+                zerolinewidth: 2,
+                zerolinecolor: 'black'
+            }
+        };
+
+        // Plot the data
+        Plotly.newPlot('chart', plotData, layout);
+        
+    }
+
+    function getMonthlyProductData(productName,csvData1) {
+        // Assume that csvData is the content of the Monthly CSV file
+        var lines = csvData1.split("\n");
+
+        // Iterate over lines to find the product data
+        for (var m = 0; m < lines.length; m++) {
+            var cells = lines[m].split(",");
+            if (cells.length >= 2 && cells[0] === productName) {
+                return {
+                    dates: ['Oct-22', 'Nov-22', 'Dec-22', 'Jan-23', 'Feb-23', 'Mar-23', 'Apr-23', 'May-23', 'Jun-23', 'Jul-23', 'Aug-23', 'Sep-23'],
+                    prices: cells.slice(2).map(parseFloat)
+                };
+            }
+        }
+
+        // Return null if the product data is not found
+        return null;
+    }
+
+
+
+
+    // Function to add a heat map to a row based on the variation in price
+    function addHeatMapToRow(row) {
+        var maxValue = 0;
+        var minValue = Number.MAX_VALUE;
+
+        // Find the maximum and minimum values in the row
+        for (var k = 2; k < row.cells.length; k++) {
+            var value = parseFloat(row.cells[k].innerHTML);
+            if (!isNaN(value)) {
+                maxValue = Math.max(maxValue, value);
+                minValue = Math.min(minValue, value);
+            }
+        }
+        var k = maxValue;
+        maxval(k);
+
+        // Add the heatmap to each cell in the row
+        for (var m = 2; m < row.cells.length; m++) {
+            var value = parseFloat(row.cells[m].innerHTML);
+            if (!isNaN(value)) {
+                var percentage = (value - minValue) / (maxValue - minValue) * 100;
+                var color = getColorForPercentage(percentage);
+                row.cells[m].style.position = 'relative';
+                row.cells[m].innerHTML += '<div class="heatmap" style="background: ' + color + '; opacity: 0.7;"></div>';
+            }
+        }
+    }
+
+    function maxval(val){
+        var k = val;
+        return k;
+    }
+
+    // Function to get a color based on a percentage value
+    // function getColorForPercentage(percentage) {
+    //     // YlOrRd color scale
+    //     var colors = ['#FFFFCC', '#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
+    //     var index = Math.round((colors.length - 1) * (percentage / 100));
+    //     return colors[index];
+    // }
+
+    function getColorForPercentage(percentage) {
+    // OrRd color scale
+        var colors = ['#fef0d9','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#990000'];
+        var index = Math.round((colors.length - 1) * (percentage / 100));
+        return colors[index];
+    }
+
+    
+    function createPlot(selectedRows, csvData) {
+        // Create a data array for Plotly
+        var plotData = [];
+
+        // Get the header row to extract dates
+        var headerRow = selectedRows[0].parentNode.parentNode;
+        var dates = [];
+        for (var k = 2; k < headerRow.cells.length; k++) {
+            dates.push(headerRow.cells[k].textContent.trim()); // Use textContent to get the actual content and trim any extra whitespaces
+        }
+
+        // Add traces for selected products
+        for (var j = 0; j < selectedRows.length; j++) {
+            var selectedRow = selectedRows[j].parentNode.parentNode;
+            var product = selectedRow.cells[1].textContent.trim(); // Use textContent to get the actual content and trim any extra whitespaces
+
+            // Use getProductData to get the data for the product
+            var productData = getProductData(product,csvData);
+
+            if (productData) {
+                var trace = {
+                    x: productData.dates,
+                    y: productData.prices,
+                    type: 'scatter',
+                    mode: 'markers+lines',
+                    name: product
+                };
+
+                plotData.push(trace);
+            }
+        }
+
+        // Layout for the plot
+        var layout = {
+            title: 'Product Prices Over Time',
+            xaxis: {
+                title: 'Time Period',
+                tickvals: [0, 1, 2, 3, 4, 5, 6], // Set tick values to all dates
+                ticktext: ['Sep-2017', 'Sep-2018', 'Sep-2019', 'Sep-2020', 'Sep-2021', 'Sep-2022', 'Sep-2023'], // Set tick text to display specific years
+                zeroline : true,
+                zerolinewidth: 2,
+                zerolinecolor: 'black'
+            },
+            yaxis: {
+                title: 'Price in dollars(CAD)',
+                zeroline : true,
+                zerolinewidth: 2,
+                zerolinecolor: 'black'
+                // range: [0, maxval + 10] 
+            }
+        };
+
+        // Plot the data
+        Plotly.newPlot('chart', plotData, layout);
+
+    }
+
+    
+
+    function getProductData(productName,csvData) {
+    // Assume that csvData is the content of the CSV file
+        var lines = csvData.split("\n");
+
+        // Iterate over lines to find the product data
+        for (var m = 0; m < lines.length; m++) {
+            var cells = lines[m].split(",");
+            if (cells.length >= 2 && cells[0] === productName) {
+                return {
+                    dates: ['Sep-17', 'Sep-18', 'Sep-19', 'Sep-20', 'Sep-21', 'Sep-22', 'Sep-23'],
+                    prices: cells.slice(2).map(parseFloat)
+                };
+            }
+        }
+
+        // Return null if the product data is not found
+        return null;
+    }
+
+    function selectAll() {
+        var checkboxes = document.querySelectorAll("#csvTable input[type='checkbox']");
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+        }
+    }
+
+    // Function to deselect all checkboxes
+    function deselectAll() {
+        var checkboxes = document.querySelectorAll("#csvTable input[type='checkbox']");
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = false;
+        }
+    }
+
+    // Read the CSV file and populate the table
+    var csvFile = 'Book1.csv'; // Change this to the path of your CSV file
+    var csvData = readCSV(csvFile);
+    populateTable(csvData);
+
+    var csvFile1 = 'Month.csv'; // Change this to the path of your CSV file
+    var csvData1 = readCSV(csvFile1);
+    populateTable(csvData1);
+
+    var csvFile2 = 'YearlyStandard.csv'; // Change this to the path of your CSV file
+    var csvData2 = readCSV(csvFile2);
+    populateTable(csvData2);
+
+    var csvFile3 = 'MonthlyStandard.csv'; // Change this to the path of your CSV file
+    var csvData3 = readCSV(csvFile3);
+    populateTable(csvData3);
+</script>
+
+</body>
+</html>
