@@ -33,24 +33,24 @@
             width: 30%;
         }
         .scrollable::-webkit-scrollbar {
-            width: 15px; /* Set the width of the scrollbar */
+            width: 15px; 
         }
 
         .scrollable::-webkit-scrollbar-thumb {
-            background-color: #888; /* Set the color of the thumb */
-            border-radius: 5px; /* Set the border-radius of the thumb */
+            background-color: #888; 
+            border-radius: 5px; 
         }
 
         .scrollable::-webkit-scrollbar-thumb:hover {
-            background-color: #555; /* Set the color of the thumb on hover */
+            background-color: #555; 
         }
 
         .scrollable::-webkit-scrollbar-track {
-            background-color: #f2f2f2; /* Set the color of the track */
+            background-color: #f2f2f2; 
         }
 
         .scrollable::-webkit-scrollbar-track:hover {
-            background-color: #ddd; /* Set the color of the track on hover */
+            background-color: #ddd;
         }
 
 
@@ -76,7 +76,7 @@
 <body>
     <div class="scrollable">
     <table id="csvTable">
-        <!-- Table header -->
+        
         <thead>
             <tr>
                 <!-- <th></th>  -->
@@ -128,7 +128,7 @@
 
         for (var i = 0; i < lines.length; i++) {
             var cells = lines[i].split(",");
-            if (cells.length >= 2) { // Make sure there are at least two columns
+            if (cells.length >= 2) { 
                 var row = table.insertRow(-1);
 
                 // Add checkbox column
@@ -195,7 +195,7 @@
                 var lines = csvData.split("\n");
         }
 
-        // Read the CSV file
+       
         // var csvData = readCSV(csvFile);
 
         // Create a new table with specified headers
@@ -208,7 +208,6 @@
         if (viewBy.includes("yearly")) {
             headers = ["Product", "Unit of Measurement", "Sep-2017", "Sep-2018", "Sep-2019", "Sep-2020", "Sep-2021", "Sep-2022", "Sep-2023"];
         } else {
-            // Assuming it's "monthly" option
             headers = ["Product", "Unit of Measurement", "Oct-2022", "Nov-2022", "Dec-2022", "Jan-2023", "Feb-2023", "Mar-2023", "Apr-2023", "May-2023", "Jun-2023", "Jul-2023", "Aug-2023", "Sep-2023"];
         }
 
@@ -217,7 +216,7 @@
             cell.innerHTML = headers[i];
         }
 
-        // Add selected rows with all columns and values
+        
         for (var j = 0; j < selectedRows.length; j++) {
             var selectedRow = selectedRows[j].parentNode.parentNode;
             var product = selectedRow.cells[1].innerHTML;
@@ -272,13 +271,13 @@
         var headerRow = selectedRows[0].parentNode.parentNode;
         var dates = [];
         for (var k = 2; k < headerRow.cells.length; k++) {
-            dates.push(headerRow.cells[k].textContent.trim()); // Use textContent to get the actual content and trim any extra whitespaces
+            dates.push(headerRow.cells[k].textContent.trim()); 
         }
 
         // Add traces for selected products
         for (var j = 0; j < selectedRows.length; j++) {
             var selectedRow = selectedRows[j].parentNode.parentNode;
-            var product = selectedRow.cells[1].textContent.trim(); // Use textContent to get the actual content and trim any extra whitespaces
+            var product = selectedRow.cells[1].textContent.trim(); 
 
             // Use getMonthlyProductData to get the data for the product
             var productData = getMonthlyProductData(product,csvData1);
@@ -301,7 +300,7 @@
             title: 'Product Prices Over Time (Monthly)',
             xaxis: {
                 title: 'Time Period',
-                tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], // Set tick values to all months
+                tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                 ticktext: ['Oct-2022', 'Nov-2022', 'Dec-2022', 'Jan-2023', 'Feb-2023', 'Mar-2023', 'Apr-2023', 'May-2023', 'Jun-2023', 'Jul-2023', 'Aug-2023', 'Sep-2023'], // Set tick text to display specific months
                 zeroline : true,
                 zerolinewidth: 2,
@@ -321,10 +320,8 @@
     }
 
     function getMonthlyProductData(productName,csvData1) {
-        // Assume that csvData is the content of the Monthly CSV file
         var lines = csvData1.split("\n");
 
-        // Iterate over lines to find the product data
         for (var m = 0; m < lines.length; m++) {
             var cells = lines[m].split(",");
             if (cells.length >= 2 && cells[0] === productName) {
@@ -335,7 +332,6 @@
             }
         }
 
-        // Return null if the product data is not found
         return null;
     }
 
@@ -375,7 +371,6 @@
         return k;
     }
 
-    // Function to get a color based on a percentage value
     // function getColorForPercentage(percentage) {
     //     // YlOrRd color scale
     //     var colors = ['#FFFFCC', '#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
@@ -402,10 +397,9 @@
             dates.push(headerRow.cells[k].textContent.trim()); // Use textContent to get the actual content and trim any extra whitespaces
         }
 
-        // Add traces for selected products
         for (var j = 0; j < selectedRows.length; j++) {
             var selectedRow = selectedRows[j].parentNode.parentNode;
-            var product = selectedRow.cells[1].textContent.trim(); // Use textContent to get the actual content and trim any extra whitespaces
+            var product = selectedRow.cells[1].textContent.trim(); 
 
             // Use getProductData to get the data for the product
             var productData = getProductData(product,csvData);
@@ -465,7 +459,6 @@
             }
         }
 
-        // Return null if the product data is not found
         return null;
     }
 
@@ -485,19 +478,19 @@
     }
 
     // Read the CSV file and populate the table
-    var csvFile = 'Book1.csv'; // Change this to the path of your CSV file
+    var csvFile = 'Book1.csv'; 
     var csvData = readCSV(csvFile);
     populateTable(csvData);
 
-    var csvFile1 = 'Month.csv'; // Change this to the path of your CSV file
+    var csvFile1 = 'Month.csv'; 
     var csvData1 = readCSV(csvFile1);
     populateTable(csvData1);
 
-    var csvFile2 = 'YearlyStandard.csv'; // Change this to the path of your CSV file
+    var csvFile2 = 'YearlyStandard.csv'; 
     var csvData2 = readCSV(csvFile2);
     populateTable(csvData2);
 
-    var csvFile3 = 'MonthlyStandard.csv'; // Change this to the path of your CSV file
+    var csvFile3 = 'MonthlyStandard.csv'; 
     var csvData3 = readCSV(csvFile3);
     populateTable(csvData3);
 </script>
