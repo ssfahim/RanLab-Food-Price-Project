@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 2px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .scrollable {
+            max-height: 250px;
+            overflow-y: scroll;
+            /* margin-left: 5px; */
+            margin-right: calc(80% );
+            width: 30%;
+        }
+        .scrollable::-webkit-scrollbar {
+            width: 15px; /* Set the width of the scrollbar */
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background-color: #888; /* Set the color of the thumb */
+            border-radius: 5px; /* Set the border-radius of the thumb */
+        }
+
+        .scrollable::-webkit-scrollbar-thumb:hover {
+            background-color: #555; /* Set the color of the thumb on hover */
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background-color: #f2f2f2; /* Set the color of the track */
+        }
+
+        .scrollable::-webkit-scrollbar-track:hover {
+            background-color: #ddd; /* Set the color of the track on hover */
+        }
+
+
+        #selectedTable {
+            margin-top: 20px;
+        }
+        .selectedTable td {
+            position: relative;
+        }
+
+        .heatmap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<!-- <div id="csvTable"></div>
+<div id="heatmap-container"></div>
+<div id="selectedTable"></div>
+<div id="chart"></div> -->
+
+<body>
+    <div class="scrollable">
+    <table id="csvTable">
+        <!-- Table header -->
+        <thead>
+            <tr>
+                <!-- <th></th>  -->
+            </tr>
+        </thead>
+        <!-- Table content will be dynamically generated here -->
+    </table>
+</div>
+
+<div>
+    <label for="viewBy">View by:</label>
+    <select id="viewBy" onchange="updateAndVisualize()">
+        <!-- <option value="yearlyStan">Yearly Standard Price</option> -->
+        <option value="yearly">Yearly Store Price</option>
+        <!-- <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
+        <option value="monthly">Monthly Store Price (Past 12 months)</option> -->
+    </select>
+</div>
+
+<button onclick="updateAndVisualize()">Update & Visualize</button>
+<button onclick="selectAll()">Select All</button>
+<button onclick="deselectAll()">Deselect All</button>
+
+<div id="selectedTable"></div>
+<div id="chart"></div>
+
+<script>
+    // Function to populate the table with CSV data
+    function populateTable(csv) {
+        // Split the CSV data into rows
+        var rows = csv.trim().split('\n');
+  
+        // Extract header (product names)
+        var headers = rows[0].split(',');
+
+        // Create HTML table
+        var table = document.getElementById('csvTable');
+
+        // Create table header
+        var thead = document.createElement('thead');
+        var headerRow = document.createElement('tr');
+        var th = document.createElement('th');
+        th.textContent = headers[0].trim(); // Use only the first header
+        headerRow.appendChild(th);
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create table body with product names
+        // var tbody = document.createElement('tbody');
+        var row = csv.split("\n");
+        for (var i = 2; i < row.length; i++) {
+            var rowData = row[i].split(',');
+            if(rowData.length>= 2){
+                var productName = rowData[0].trim(); // Use only the first column data
+                var rop = table.insertRow(-1);
+
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = rowData[0];
+            }
+            
+        }
+        
+    }
+
+    // Function to update and visualize selected items
+    function updateAndVisualize() {
+        var selectedTable = document.getElementById("selectedTable");
+        selectedTable.innerHTML = ""; // Clear previous content
+
+        var selectedRows = document.querySelectorAll("#csvTable input:checked");
+        // if (selectedRows.length === 0) {
+        //     alert("Please select at least one item.");
+        //     return;
+        // }
+
+        // Determine the file based on the selected "View by" option
+        var viewBy = document.getElementById("viewBy").value;
+        var csvFile;
+
+        switch (viewBy) {
+            // case "yearlyStan":
+            //     var csvFile2 = 'YearlyStandard.csv';
+            //     var csvData2 = readCSV(csvFile2);
+            //     var lines = csvData2.split("\n");
+            //     break;
+            case "yearly":
+                // var csvFile = 'Book1.csv';
+                // var csvData = readCSV(csvFile);
+                var lines = csvData.split("\n");
+                break;
+            // case "monthlyStan":
+            //     var csvFile3 = 'MonthlyStandard.csv';
+            //     var csvData3 = readCSV(csvFile3);
+            //     var lines = csvData3.split("\n");
+            //     break;
+            // case "monthly":
+            //     var csvFile1 = 'Month.csv';
+            //     var csvData1 = readCSV(csvFile1);
+            //     var lines = csvData1.split("\n");
+            //     break;
+            default:
+                // csvFile = 'YearlyStandard.csv'; // Default value
+                // var csvData = readCSV(csvFile);
+                var lines = csvData.split("\n");
+        }
+
+        // Read the CSV file
+        // var csvData = readCSV(csvFile);
+
+        // Create a new table with specified headers
+        var newTable = document.createElement("table");
+        newTable.classList.add("selectedTable");
+
+        var headerRow = newTable.insertRow(-1);
+        var headers;
+
+        if (viewBy.includes("yearly")) {
+            headers = ["Product", "Unit of Measurement", "Sep-2017", "Sep-2018", "Sep-2019", "Sep-2020", "Sep-2021", "Sep-2022", "Sep-2023"];
+        } 
+        // else {
+        //     // Assuming it's "monthly" option
+        //     headers = ["Product", "Unit of Measurement", "Oct-2022", "Nov-2022", "Dec-2022", "Jan-2023", "Feb-2023", "Mar-2023", "Apr-2023", "May-2023", "Jun-2023", "Jul-2023", "Aug-2023", "Sep-2023"];
+        // }
+
+        for (var i = 0; i < headers.length; i++) {
+            var cell = headerRow.insertCell(-1);
+            cell.innerHTML = headers[i];
+        }
+
+        // Add selected rows with all columns and values
+        for (var j = 0; j < selectedRows.length; j++) {
+            var selectedRow = selectedRows[j].parentNode.parentNode;
+            var product = selectedRow.cells[1].innerHTML;
+
+            var newRow = newTable.insertRow(-1);
+
+            for (var k = 1; k < selectedRow.cells.length; k++) {
+                var cell = newRow.insertCell(-1);
+                cell.innerHTML = selectedRow.cells[k].innerHTML;
+            }
+
+            // Retrieve all data for the selected item from the CSV file
+            // var lines = csvData.split("\n");
+
+            for (var m = 0; m < lines.length; m++) {
+                var cells = lines[m].split(",");
+                if (cells.length >= 2 && cells[0] === product) {
+                    for (var n = 1; n < cells.length; n++) {
+                        var cell = newRow.insertCell(-1);
+                        cell.innerHTML = cells[n];
+                    }
+                    break;
+                }
+            }
+
+            // Add a heat map to each row
+            addHeatMapToRow(newRow);
+        }
+        selectedTable.appendChild(newTable);
+
+        // // Create Plotly marker+line chart
+        if (viewBy ==="yearly") {
+            createPlot(selectedRows, csvData);
+        } 
+        // else if(viewBy === "yearlyStan") {
+        //     createPlot(selectedRows, csvData);
+        // }
+        // else if(viewBy === "monthlyStan") {
+        //     createMonthlyPlot(selectedRows, csvData3);
+        // }
+        // else if(viewBy === "monthly") {
+        //     createMonthlyPlot(selectedRows, csvData1);
+        // }
+    }
+
+    function addHeatMapToRow(row) {
+        var maxValue = 0;
+        var minValue = Number.MAX_VALUE;
+
+        // Find the maximum and minimum values in the row
+        for (var k = 2; k < row.cells.length; k++) {
+            var value = parseFloat(row.cells[k].innerHTML);
+            if (!isNaN(value)) {
+                maxValue = Math.max(maxValue, value);
+                minValue = Math.min(minValue, value);
+            }
+        }
+        var k = maxValue;
+        maxval(k);
+
+        // Add the heatmap to each cell in the row
+        for (var m = 2; m < row.cells.length; m++) {
+            var value = parseFloat(row.cells[m].innerHTML);
+            if (!isNaN(value)) {
+                var percentage = (value - minValue) / (maxValue - minValue) * 100;
+                var color = getColorForPercentage(percentage);
+                row.cells[m].style.position = 'relative';
+                row.cells[m].innerHTML += '<div class="heatmap" style="background: ' + color + '; opacity: 0.7;"></div>';
+            }
+        }
+    }
+
+    function maxval(val){
+        var k = val;
+        return k;
+    }
+
+    function getColorForPercentage(percentage) {
+    // OrRd color scale
+        var colors = ['#fef0d9','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#990000'];
+        var index = Math.round((colors.length - 1) * (percentage / 100));
+        return colors[index];
+    }
+
+    function createPlot(selectedRows, csvData) {
+        // Create a data array for Plotly
+        var plotData = [];
+
+        // Get the header row to extract dates
+        var headerRow = selectedRows[0].parentNode.parentNode;
+        var dates = [];
+        for (var k = 2; k < headerRow.cells.length; k++) {
+            dates.push(headerRow.cells[k].textContent.trim()); // Use textContent to get the actual content and trim any extra whitespaces
+        }
+
+        // Add traces for selected products
+        for (var j = 0; j < selectedRows.length; j++) {
+            var selectedRow = selectedRows[j].parentNode.parentNode;
+            var product = selectedRow.cells[1].textContent.trim(); // Use textContent to get the actual content and trim any extra whitespaces
+
+            // Use getProductData to get the data for the product
+            var productData = getProductData(product,csvData);
+
+            if (productData) {
+                var trace = {
+                    x: productData.dates,
+                    y: productData.prices,
+                    type: 'scatter',
+                    mode: 'markers+lines',
+                    name: product
+                };
+
+                plotData.push(trace);
+            }
+        }
+
+        // Layout for the plot
+        var layout = {
+            title: 'Product Prices Over Time',
+            xaxis: {
+                title: 'Time Period',
+                tickvals: [0, 1, 2, 3, 4, 5, 6], // Set tick values to all dates
+                ticktext: ['Sep-2017', 'Sep-2018', 'Sep-2019', 'Sep-2020', 'Sep-2021', 'Sep-2022', 'Sep-2023'], // Set tick text to display specific years
+                zeroline : true,
+                zerolinewidth: 2,
+                zerolinecolor: 'black'
+            },
+            yaxis: {
+                title: 'Price in dollars(CAD)',
+                zeroline : true,
+                zerolinewidth: 2,
+                zerolinecolor: 'black'
+                // range: [0, maxval + 10] 
+            }
+        };
+
+        // Plot the data
+        Plotly.newPlot('chart', plotData, layout);
+    }
+
+    function getProductData(productName,csvData) {
+    // Assume that csvData is the content of the CSV file
+        var lines = csvData.split("\n");
+
+        // Iterate over lines to find the product data
+        for (var m = 0; m < lines.length; m++) {
+            var cells = lines[m].split(",");
+            if (cells.length >= 2 && cells[0] === productName) {
+                return {
+                    dates: ['Sep-17', 'Sep-18', 'Sep-19', 'Sep-20', 'Sep-21', 'Sep-22', 'Sep-23'],
+                    prices: cells.slice(2).map(parseFloat)
+                };
+            }
+        }
+
+        // Return null if the product data is not found
+        return null;
+    }
+
+
+    function selectAll() {
+        var checkboxes = document.querySelectorAll("#csvTable input[type='checkbox']");
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+        }
+    }
+
+    // Function to deselect all checkboxes
+    function deselectAll() {
+        var checkboxes = document.querySelectorAll("#csvTable input[type='checkbox']");
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = false;
+        }
+    }
+
+  
+
+  // Example usage
+    var csvData = `
+            Product,Unit of Measurement,Sep-17,Sep-18,Sep-19,Sep-20,Sep-21,Sep-22,Sep-23
+            Beef stewing cuts,per kilogram,14.73,11.89,14.46,13.94,15.65,14.69,17.63
+            Beef striploin cuts,per kilogram,26.36,20.89,18.96,27.68,24.96,23.22,27.03
+            Beef top sirloin cuts,per kilogram,14.77,12.34,13.39,12.25,15.5,18.47,20.57
+            Beef rib cuts,per kilogram,21.12,24.19,27.94,30.86,31.27,32.85,32.33
+            Ground beef,per kilogram,8.29,8.16,8.47,9.66,10.02,10.93,11.52
+            Pork loin cuts,per kilogram,6.81,6.97,6.78,8.45,7.91,8.08,9.1
+            Pork rib cuts,per kilogram,9.73,7.02,7.13,9.41,11.1,9.1,9.58
+            Pork shoulder cuts,per kilogram,4.18,7.82,7.61,6.35,7.78,8.1,8.92
+            Whole chicken,per kilogram,4.96,4.83,4.73,4.76,5.62,6.09,6.42
+            Chicken breasts,per kilogram,12.31,11.59,12.58,12.28,13.02,13.11,13.81
+            Chicken thigh,per kilogram,6.64,6.78,6.32,6.94,7.97,8.16,7.99
+            Chicken drumsticks,per kilogram,6.03,6.57,5.85,6.23,6.86,6.99,6.55
+            Bacon,500 grams,5.8,6.06,5.97,5.7,6.74,7.19,6.84
+            Wieners,500 grams,2.75,3.27,3.14,3.32,3.41,4.06,3.53
+            Salmon,per kilogram,20.05,19.92,20.13,21.37,22.21,25.66,26.67
+            Shrimp,grams,7.51,6.61,6.98,6.96,6.9,7.53,8.16
+            Milk,1 litre,2.8,2.94,2.95,3.04,3.14,3.47,3.56
+            Milk,2 litres,3.74,3.7,3.68,3.86,3.92,4.75,4.95
+            Soy milk,1.89 litres,3.97,3.58,3.83,3.97,3.96,4.34,4.75
+            Eggs,dozen,3.41,3.52,3.59,4.05,3.77,5.09,4.65
+            Nut milk,1.89 litres,3.95,3.64,3.74,3.93,3.99,4.34,6
+            Cream,1 litre,4.91,4.93,4.94,5.33,5.49,5.73,6.03
+            Butter,454 grams,4.23,3.99,4.14,4.87,4.9,5.98,7.58
+            Margarine,907 grams,4.61,4.28,4.48,4.76,5.02,6.95,6.75
+            Block cheese,500 grams,5.52,5.78,5.8,5.69,6.3,6.71,3.97
+            Yogurt,500 grams,3.18,3.08,3.19,3.38,3.49,3.58,5.19
+            Apples,per kilogram,5.23,5.32,5.84,5.57,6.37,7.02,7.06
+            Oranges,per kilogram,4.25,3.98,3.97,4.55,5.19,6.03,6
+            Oranges,1.36 kilogram,5.09,5.32,5.39,5.58,5.32,6.73,6.67
+            Bananas,per kilogram,2.13,2.1,2.06,2.11,2.06,2.15,2.18
+            Pears,per kilogram,4.81,5.47,4.75,6.03,6.25,7.14,6.89
+            Lemons,unit,1.04,1.04,1,1.09,1.02,1.13,1.14
+            Limes,unit,0.82,0.85,0.8,1,1,1.07,1.36
+            Grapes,per kilogram,6.27,6.65,5.99,7.32,7.28,7.41,8.67
+            Cantaloupe,unit,2.99,3.14,3.39,3.3,3.57,4.91,4.2
+            Strawberries,454 grams,3.78,3.62,3.97,5.04,4.7,5.14,5.29
+            Avocado,unit,2.13,1.76,1.82,1.97,1.84,1.56,1.87
+            Potatoes,4.54 kilogram,5.1,4.59,5.36,5.73,4.98,5.89,6.27
+            Potatoes,per kilogram,4.21,4.19,4.97,4.45,5.1,5.58,5.78
+            Sweet potatoes,per kilogram,4.88,4.82,5.21,5,4.53,4.49,5.12
+            Tomatoes,per kilogram,4.5,4.21,4.36,7.12,5.37,5.89,6.11
+            Cabbage,grams,2.33,2.27,2.53,2.75,2.33,2.63,2.91
+            Carrots,1.36 kilogram,2.89,2.98,3.07,3.51,3.53,4.15,4.19
+            Onions,per kilogram,5.05,5.12,5.11,4.78,5.21,5.77,6.06
+            Onions,1.36 kilogram,3.51,3.56,3.65,3.89,4.13,5.06,4.81
+            Celery,unit,2.74,3.03,3.04,3.14,2.58,3.11,3.43
+            Cucumber,unit,1.8,1.98,1.94,2.07,1.83,2.04,2.02
+            Mushrooms,227 grams,2.33,2.47,2.51,2.88,2.79,3.04,3
+            Iceberg lettuce,unit,2.12,2.57,2.28,2.64,2.61,2.95,3.31
+            Romaine lettuce,unit,2.36,2.36,2.71,2.79,2.4,2.97,2.79
+            Broccoli,unit,2.35,2.27,2.92,2.95,2.91,3.33,3.39
+            Peppers,per kilogram,7.19,7.27,6.7,8.49,7.82,7.41,8.43
+            Squash,kilograms,3.65,3.66,4.12,3.93,3.93,4.54,4.49
+            Salad greens,142 grams,4.55,4.72,4.48,4.72,4.43,4.86,4.4
+            Meatless burgers,226 grams,4.04,4.15,5.78,5.71,5.67,5.84,6.1
+            Frozen french fried potatoes,750 grams,2.07,2.03,2.35,2.38,2.45,2.91,3.29
+            Frozen green beans,750 grams,3.94,3.77,3.95,3.8,3.94,4.46,4.54
+            Frozen broccoli,500 grams,2.81,3.06,3.35,3.43,3.31,3.79,3.88
+            Frozen corn,750 grams,2.85,2.97,3.26,3.11,3.15,3.48,3.61
+            Frozen mixed vegetables,750 grams,3.45,3.42,3.74,3.7,3.58,4.14,4.39
+            Frozen peas,750 grams,2.9,3,3.3,3.1,3.07,3.45,3.63
+            Frozen pizza,390 grams,3.67,3.81,3.79,4.24,4.2,4.26,4.95
+            Frozen spinach,300 grams,1.87,1.98,1.79,1.73,1.99,2.49,2.52
+            Frozen strawberries,600 grams,4.18,4.28,4.45,4.59,4.44,5.26,4.68
+            White bread,675 grams,3.25,2.93,3.31,3.31,3.25,3.87,4.03
+            Flatbread and pita,500 grams,4.2,4.1,3.72,3.82,3.78,4.51,5.05
+            Crackers and crisp breads,200 grams,2.44,2.5,2.57,2.58,2.56,3.03,3.19
+            Cookies and sweet biscuits,300 grams,2.73,2.74,2.81,3.05,3.02,3.45,3.44
+            Dry or fresh pasta,500 grams,2.52,2.28,2.09,2.45,2.88,3.74,3.7
+            Brown rice,900 grams,4.91,4.94,4.62,5.21,5.07,5.82,5.5
+            White rice,2 kilogram,9.42,9.84,9.2,10.55,9.76,11.48,11.24
+            Cereal,400 grams,3.33,3.22,3.33,3.49,3.56,4.19,4.42
+            Wheat flour,2.5 kilogram,3.69,3.31,3.33,5.09,3.5,5.5,5.37
+            White sugar,2 kilogram,1.89,1.95,2.03,1.77,2.29,2.56,2.4
+            Apple juice,2 litres,2.66,2.94,2.58,3.49,3.32,3.52,4.03
+            Orange juice,2 litres,4.01,3.93,3.87,4.52,4.42,4.45,4.95
+            Roasted or ground coffee,340 grams,5.56,6.19,5.93,6.59,6.51,7.33,7.3
+            Tea,20 bags,3.58,3.79,3.59,4.11,3.96,4.44,4.73
+            Vegetable oil,3 liters,6.85,7.33,6.24,7.12,10.39,12.59,11.66
+            Canola oil,3 liters,10.34,10.18,10.25,10.19,11.61,16.5,14.98
+            Olive oil,1 litre,8.15,8.82,7.35,7.72,8.02,9.29,13.9
+            Baby food,128 milliliters,1.28,1.37,1.42,1.59,1.57,1.77,1.89
+            Infant formula,900 grams,26.32,27.76,28.01,27.17,31.11,33.99,41.9
+            Peanut butter,1 kilogram,4.24,4.5,4.45,4.43,5.06,5.4,6.24
+            Ketchup,1 litre,3.23,3.37,3.31,3.55,3.37,4.3,4.7
+            Mayonnaise,890 milliliters,3.88,4.16,4.3,4.29,4.4,5.55,6.02
+            Canned salmon,213 grams,2.84,2.97,4.81,4.79,3.82,4.39,4.74
+            Canned tuna,170 grams,1.7,1.7,1.81,1.89,1.61,1.85,2.15
+            Canned baked beans,398 milliliters,1.28,1.24,1.36,1.41,1.44,1.7,1.99
+            Canned tomatoes,796 milliliters,1.55,1.39,1.7,1.83,1.64,1.7,2
+            Canned soup,284 milliliters,0.83,0.82,0.77,0.87,0.94,1.35,1.4
+            Canned beans and lentils,540 milliliters,1.33,1.29,1.5,1.55,1.48,1.78,1.77
+            Canned corn,341 milliliters,1.08,1.11,1.24,1.45,1.33,1.82,1.55
+            Canned peach,398 milliliters,2.07,2.32,2.15,2.33,2.27,2.64,2.93
+            Canned pear,398 milliliters,2.01,2.03,2.13,2.38,2.31,2.63,3.02
+            Dried lentils,900 grams,3.56,3.26,3.44,3.45,3.42,3.92,4.02
+            Dry beans and legumes,900 grams,3.32,3.07,3.19,3.58,3.25,3.47,3.41
+            Tofu,350 grams,1.93,2.14,2.04,2.08,2.45,3.04,2.75
+            Hummus,227 grams,3.61,3.45,3.6,3.58,3.46,3.85,4.03
+            Salsa,418 milliliters,3.37,3.24,3.49,3.61,3.64,4.19,4.77
+            Pasta sauce,650 milliliters,1.95,2.11,2.05,2.16,2.21,3.02,2.38
+            Salad dressing,475 milliliters,2.56,2.52,2.63,2.78,3.27,3.59,3.7
+            Almonds,200 grams,4.34,5.76,5.45,6,5.6,5.84,4.92
+            Peanuts,450 grams,3.98,3.62,2.98,4.05,3.43,3.51,3.94
+            Sunflower seeds,400 grams,4.93,4.55,4.72,4.97,4.23,4.76,4.76
+            Deodorant,85 grams,4.58,4.94,4.9,5.4,5.83,6.37,7.09
+            Toothpaste,100 milliliters,2.73,2.82,3.15,3.38,3.61,4.29,4.37
+            Shampoo,400 milliliters,5.13,5.02,4.72,5.54,5.66,5.96,6.67
+            Laundry detergent,4.43 liters,7.16,12.41,11.88,12.05,12.56,15.27,16.51
+            `;
+
+    populateTable(csvData);
+</script>
+
+
+
+</body>
+</html>
