@@ -134,12 +134,44 @@
 
 <script>
     // Function to populate the table with CSV data
+
+    // Custom CSV parsing function
+    // function parseCSV(csv) {
+    //     var lines = csv.trim().split('\n');
+    //     var headers = lines[0].split(',');
+    //     var result = [];
+
+    //     for (var i = 1; i < lines.length; i++) {
+    //         var currentLine = lines[i].split(',');
+    //         var obj = {};
+
+    //         for (var j = 0; j < headers.length; j++) {
+    //             var header = headers[j].trim();
+    //             var value = currentLine[j] ? currentLine[j].trim() : null;
+    //             obj[header] = value;
+    //         }
+
+    //         result.push(obj);
+    //     }
+
+    //     return result;
+    // }
+
+    // // Use the custom CSV parsing function
+    // var parsedData = parseCSV(csvData);
+
+
     function populateTable(csv) {
         // Split the CSV data into rows
         var rows = csv.trim().split('\n');
   
-        // Extract header (product names)
+        // // Extract header (product names)
         var headers = rows[0].split(',');
+
+        // var parsedData = Plotly.csv.parse(csv);
+
+        // // Extract header (product names)
+        // var headers = Object.keys(parsedData[0]);
 
         // Create HTML table
         var table = document.getElementById('csvTable');
@@ -227,8 +259,18 @@
         var headerRow = newTable.insertRow(-1);
         var headers;
 
+        var dates = [];
+        for (var k = 2; k < headerRow.cells.length; k++) {
+            dates.push(headerRow.cells[k].textContent.trim());
+        }
+
         if (viewBy.includes("yearly")) {
             headers = ["Product", "Unit of Measurement", "Sep-2017", "Sep-2018", "Sep-2019", "Sep-2020", "Sep-2021", "Sep-2022", "Sep-2023"];
+            var dates = [];
+            for (var k = 2; k < headers.length; k++) {
+                dates.push(headers[k]);
+            }
+            console.log(dates);
         } 
         // else {
         //     // Assuming it's "monthly" option
@@ -239,6 +281,11 @@
             var cell = headerRow.insertCell(-1);
             cell.innerHTML = headers[i];
         }
+
+        // var selectedRow = selectedRows[1].parentNode.parentNode;
+        // var product = selectedRow.cells[1].innerHTML;
+        // console.log(product)
+
 
         // Add selected rows with all columns and values
         for (var j = 0; j < selectedRows.length; j++) {
@@ -273,7 +320,7 @@
 
         // // Create Plotly marker+line chart
         if (viewBy ==="yearly") {
-            createPlot(selectedRows, csvData);
+            createPlot(selectedRows, csvData, dates);
         } 
         // else if(viewBy === "yearlyStan") {
         //     createPlot(selectedRows, csvData);
@@ -325,29 +372,100 @@
         return colors[index];
     }
 
-    function createPlot(selectedRows, csvData) {
-        // Create a data array for Plotly
+    // function createPlot(selectedRows, csvData) {
+
+    //     // Create a data array for Plotly
+    //     var plotData = [];
+
+    //     // Get the header row to extract dates
+    //     var headerRow = selectedRows[0].parentNode.parentNode;
+    //     var dates = [];
+        
+    //     for (var k = 2; k < headerRow.cells.length; k++) {
+    //         dates.push(headerRow.cells[k].textContent.trim()); // Use textContent to get the actual content and trim any extra whitespaces
+    //     }
+        
+
+    //     // Add traces for selected products
+    //     for (var j = 0; j < selectedRows.length; j++) {
+    //         var selectedRow = selectedRows[j].parentNode.parentNode;
+    //         var product = selectedRow.cells[1].textContent.trim();
+
+    //         var productData = getProductData(product, csvData);
+
+    //         if (productData) {
+    //             var trace = {
+    //                 x: productData.dates,
+    //                 y: productData.prices,
+    //                 type: 'scatter',
+    //                 mode: 'markers+lines',
+    //                 name: product
+    //             };
+
+    //             plotData.push(trace);
+    //         }
+    //     }
+
+    //     var layout = {
+    //         title: 'Product Prices Over Time',
+    //         xaxis: {
+    //             title: 'Time Period',
+    //             tickvals: [0, 1, 2, 3, 4, 5, 6],
+    //             ticktext: ['Sep-2017', 'Sep-2018', 'Sep-2019', 'Sep-2020', 'Sep-2021', 'Sep-2022', 'Sep-2023'],
+    //             zeroline: true,
+    //             zerolinewidth: 2,
+    //             zerolinecolor: 'black'
+    //         },
+    //         yaxis: {
+    //             title: 'Price in dollars(CAD)',
+    //             zeroline: true,
+    //             zerolinewidth: 2,
+    //             zerolinecolor: 'black'
+    //         }
+    //     };
+
+    //     Plotly.newPlot('chart', plotData, layout);
+    // }
+
+    // function getProductData(productName, csvData) {
+    //     var lines = csvData.split("\n");
+
+    //     for (var m = 0; m < lines.length; m++) {
+    //         var cells = lines[m].split(",");
+    //         if (cells.length >= 2 && cells[0] === productName) {
+    //             return {
+    //                 dates: ['Sep-17', 'Sep-18', 'Sep-19', 'Sep-20', 'Sep-21', 'Sep-22', 'Sep-23'],
+    //                 prices: cells.slice(2).map(parseFloat)
+    //             };
+    //         }
+    //     }
+
+    //     return null;
+    // }
+
+    function createPlot(selectedRows, csvData, dates) {
+    // Create a data array for Plotly
         var plotData = [];
 
         // Get the header row to extract dates
-        var headerRow = selectedRows[0].parentNode.parentNode;
-        var dates = [];
-        for (var k = 2; k < headerRow.cells.length; k++) {
-            dates.push(headerRow.cells[k].textContent.trim()); // Use textContent to get the actual content and trim any extra whitespaces
-        }
+        // var headerRow = selectedRows[0].closest('table').querySelector('thead tr');
+        // var dates = [];
+
+        // for (var k = 2; k < headerRow.cells.length; k++) {
+        //     dates.push(headerRow.cells[k].textContent.trim());
+        // }
 
         // Add traces for selected products
         for (var j = 0; j < selectedRows.length; j++) {
             var selectedRow = selectedRows[j].parentNode.parentNode;
-            var product = selectedRow.cells[1].textContent.trim(); // Use textContent to get the actual content and trim any extra whitespaces
+            var product = selectedRow.cells[1].textContent.trim();
 
             // Use getProductData to get the data for the product
-            var productData = getProductData(product,csvData);
-            console.log(productData.prices);
+            var productData = getProductData(product, csvData);
 
             if (productData) {
                 var trace = {
-                    x: productData.dates,
+                    x: dates,
                     y: productData.prices,
                     type: 'scatter',
                     mode: 'markers+lines',
@@ -357,24 +475,24 @@
                 plotData.push(trace);
             }
         }
+        console.log(plotData)
 
         // Layout for the plot
         var layout = {
             title: 'Product Prices Over Time',
             xaxis: {
                 title: 'Time Period',
-                tickvals: [0, 1, 2, 3, 4, 5, 6], // Set tick values to all dates
-                ticktext: ['Sep-2017', 'Sep-2018', 'Sep-2019', 'Sep-2020', 'Sep-2021', 'Sep-2022', 'Sep-2023'], // Set tick text to display specific years
-                zeroline : true,
+                tickvals: [0, 1, 2, 3, 4, 5, 6],
+                ticktext: dates,
+                zeroline: true,
                 zerolinewidth: 2,
                 zerolinecolor: 'black'
             },
             yaxis: {
                 title: 'Price in dollars(CAD)',
-                zeroline : true,
+                zeroline: true,
                 zerolinewidth: 2,
                 zerolinecolor: 'black'
-                // range: [0, maxval + 10] 
             }
         };
 
@@ -382,25 +500,23 @@
         Plotly.newPlot('chart', plotData, layout);
     }
 
-    function getProductData(productName,csvData) {
-    // Assume that csvData is the content of the CSV file
-        var lines = csvData.split("\n");
+    function getProductData(productName, csvData) {
+        // Parse CSV data into a JavaScript object
+        var lines = csvData.trim().split('\n');
+        var headers = lines[0].split(',');
 
-        // Iterate over lines to find the product data
-        for (var m = 0; m < lines.length; m++) {
-            var cells = lines[m].split(",");
-            if (cells.length >= 2 && cells[0] === productName) {
+        for (var m = 1; m < lines.length; m++) {
+            var cells = lines[m].split(',');
+            if (cells.length >= 2 && cells[0].trim() === productName) {
                 return {
-                    dates: ['Sep-17', 'Sep-18', 'Sep-19', 'Sep-20', 'Sep-21', 'Sep-22', 'Sep-23'],
                     prices: cells.slice(2).map(parseFloat)
-                    
                 };
             }
         }
 
-        // Return null if the product data is not found
         return null;
     }
+
 
 
     function selectAll() {
