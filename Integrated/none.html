@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Viewer</title>
+    <title>Integrated Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+        }
+
+        p {
+            font-size: 18px; /* Adjust the size as needed */
         }
 
         table {
@@ -69,6 +73,20 @@
             bottom: 0;
             z-index: -1;
         }
+        select {
+            font-size: 16px; /* Adjust the size as needed */
+            padding: 8px;    /* Adjust the padding as needed */
+        }
+
+        /* Increase the size of the buttons */
+        button {
+            font-size: 16px; /* Adjust the size as needed */
+            padding: 10px;   /* Adjust the padding as needed */
+        }
+
+        #atAGlance {
+            margin-top: 20px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -80,6 +98,11 @@
 <div id="chart"></div> -->
 
 <body>
+    <header>
+        <h1>Average Retail Food Prices (2017 - 2023) </h1>
+        <p>Source: Statistics Canada. (2023, November 1). <i>Table 18-10-0245-01 Monthly average retail prices for selected products.</i></p>
+    </header>
+
     <div class="scrollable">
     <table id="csvTable">
         <!-- Table header -->
@@ -158,10 +181,10 @@
         selectedTable.innerHTML = ""; // Clear previous content
 
         var selectedRows = document.querySelectorAll("#csvTable input:checked");
-        // if (selectedRows.length === 0) {
-        //     alert("Please select at least one item.");
-        //     return;
-        // }
+        if (selectedRows.length === 0) {
+            alert("Please select at least one item.");
+            return;
+        }
 
         // Determine the file based on the selected "View by" option
         var viewBy = document.getElementById("viewBy").value;
@@ -320,6 +343,7 @@
 
             // Use getProductData to get the data for the product
             var productData = getProductData(product,csvData);
+            console.log(productData.prices);
 
             if (productData) {
                 var trace = {
@@ -369,6 +393,7 @@
                 return {
                     dates: ['Sep-17', 'Sep-18', 'Sep-19', 'Sep-20', 'Sep-21', 'Sep-22', 'Sep-23'],
                     prices: cells.slice(2).map(parseFloat)
+                    
                 };
             }
         }
