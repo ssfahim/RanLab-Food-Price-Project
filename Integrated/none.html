@@ -121,7 +121,7 @@
         <!-- <option value="yearlyStan">Yearly Standard Price</option> -->
         <option value="yearly">Yearly Store Price</option>
         <!-- <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option> -->
-        <option value="monthly">Monthly Store Price (Past 12 months)</option>
+        <!-- <option value="monthly">Monthly Store Price (Past 12 months)</option> -->
     </select>
 </div>
 
@@ -207,7 +207,112 @@
         
     }
 
-    // Function to update and visualize selected items
+    // function updateAndVisualize() {
+    //     var selectedTable = document.getElementById("selectedTable");
+    //     selectedTable.innerHTML = ""; // Clear previous content
+
+    //     var selectedRows = document.querySelectorAll("#csvTable input:checked");
+    //     if (selectedRows.length === 0) {
+    //         alert("Please select at least one item.");
+    //         return;
+    //     }
+
+    //     // Determine the file based on the selected "View by" option
+    //     var viewBy = document.getElementById("viewBy").value;
+    //     var csvFile;
+
+    //     switch (viewBy) {
+    //         case "yearly":
+    //             var lines = csvData.split("\n");
+    //             var headers = lines[0].split(",");
+                
+    //             // Extract the last month from the headers
+    //             var lastMonth = headers[headers.length - 1];
+
+    //             // Extract the corresponding month data from each year
+    //             var monthsOfYear = [];
+    //             for (var i = 1; i < headers.length; i++) {
+    //                 monthsOfYear.push(headers[i].split("-")[0] + "-" + lastMonth);
+    //             }
+    //             break;
+    //         case "monthly":
+    //             var lines = csvData.split("\n");
+    //             break;
+    //         default:
+    //             var lines = csvData.split("\n");
+    //     }
+
+    //     // Create a new table with specified headers
+    //     var newTable = document.createElement("table");
+    //     newTable.classList.add("selectedTable");
+
+    //     var headerRow = newTable.insertRow(-1);
+    //     var headers;
+
+    //     var dates = [];
+    //     for (var k = 2; k < headerRow.cells.length; k++) {
+    //         dates.push(headerRow.cells[k].textContent.trim());
+    //     }
+
+    //     if (viewBy.includes("yearly")) {
+    //         headers = ["Product", "Unit of Measurement", ...monthsOfYear]; // Use the modified months
+    //         var dates = monthsOfYear; // Update the dates to only include the extracted months
+    //         // console.log(dates);
+    //     } else {
+    //         // Assuming it's "monthly" option
+    //         headers = ["Product", "Unit of Measurement", ...headers.slice(2)]; // Keep the original headers
+    //         var dates = headers.slice(2); // Update the dates to only include the original months
+    //     }
+
+    //     for (var i = 0; i < headers.length; i++) {
+    //         var cell = headerRow.insertCell(-1);
+    //         cell.innerHTML = headers[i];
+    //     }
+
+    //     // ...
+
+    //     // Add selected rows with selected columns and values
+    //     for (var j = 0; j < selectedRows.length; j++) {
+    //         var selectedRow = selectedRows[j].parentNode.parentNode;
+    //         var product = selectedRow.cells[1].innerHTML;
+
+    //         var newRow = newTable.insertRow(-1);
+
+    //         for (var k = 1; k < selectedRow.cells.length; k++) {
+    //             var cell = newRow.insertCell(-1);
+    //             cell.innerHTML = selectedRow.cells[k].innerHTML;
+    //         }
+
+    //         // ...
+
+    //         for (var m = 0; m < lines.length; m++) {
+    //             var cells = lines[m].split(",");
+    //             if (cells.length >= 2 && cells[0] === product) {
+    //                 for (var n = 1; n < cells.length; n++) {
+    //                     if (dates.includes(headers[n])) { // Only add the selected columns
+    //                         var cell = newRow.insertCell(-1);
+    //                         cell.innerHTML = cells[n];
+    //                     }
+    //                 }
+    //                 break;
+    //             }
+    //         }
+
+    //         // ...
+    //     }
+    //     selectedTable.appendChild(newTable);
+
+    //     // // Create Plotly marker+line chart
+    //     if (viewBy === "yearly") {
+    //         createPlot(selectedRows, csvData, dates);
+    //     } else if (viewBy === "monthly") {
+    //         createPlot(selectedRows, csvData, dates);
+    //     }
+    // }
+
+
+
+
     function updateAndVisualize() {
         var selectedTable = document.getElementById("selectedTable");
         selectedTable.innerHTML = ""; // Clear previous content
@@ -257,29 +362,47 @@
         newTable.classList.add("selectedTable");
 
         var headerRow = newTable.insertRow(-1);
-        var headers;
 
+        var rows = csvData.trim().split('\n');
+        var header= rows[0].split(',');
+        var headers = [];
+        headers.push(rows[0].split(',')[0],rows[0].split(',')[1]);
         var dates = [];
-        for (var k = 2; k < headerRow.cells.length; k++) {
-            dates.push(headerRow.cells[k].textContent.trim());
-        }
+        var a = [];
+        // k.push(rows[0].split(',')[1]);
+        // for (var k = 2; k < headerRow.cells.length; k++) {
+        //     dates.push(headerRow.cells[k].textContent.trim());
+        // }
 
         if (viewBy.includes("yearly")) {
-            headers = ["Product", "Unit of Measurement", "Sep-2017", "Sep-2018", "Sep-2019", "Sep-2020", "Sep-2021", "Sep-2022", "Sep-2023"];
-            var dates = [];
-            for (var k = 2; k < headers.length; k++) {
-                dates.push(headers[k]);
+            // headers = ['Product','Unit of Measurement','Jan-17','Feb-17','Mar-17','Apr-17','May-17','Jun-17','Jul-17','Aug-17','Sep-17','Oct-17','Nov-17','Dec-17','Jan-18','Feb-18','Mar-18','Apr-18','May-18','Jun-18','Jul-18','Aug-18','Sep-18','Oct-18','Nov-18','Dec-18','Jan-19','Feb-19','Mar-19','Apr-19','May-19','Jun-19','Jul-19','Aug-19','Sep-19','Oct-19','Nov-19','Dec-19','Jan-20','Feb-20','Mar-20','Apr-20','May-20','Jun-20','Jul-20','Aug-20','Sep-20','Oct-20','Nov-20','Dec-20','Jan-21','Feb-21','Mar-21','Apr-21','May-21','Jun-21','Jul-21','Aug-21','Sep-21','Oct-21','Nov-21','Dec-21','Jan-22','Feb-22','Mar-22','Apr-22','May-22','Jun-22','Jul-22','Aug-22','Sep-22','Oct-22','Nov-22','Dec-22','Jan-23','Feb-23','Mar-23','Apr-23','May-23','Jun-23','Jul-23','Aug-23','Sep-23'];
+            // for (var k = 2; k < headers.length; k++) {
+            //     dates.push(headers[k]);
+            // }
+            // var rows = csvData.trim().split('\n');
+            // var header = rows[0].split(',');
+
+            var lastMonthIndex = header[header.length - 1];
+            var lastMonthValues = lastMonthIndex.split('-')[0];
+            // var dates = [];
+            // let k = [];
+            for (let i = 0; i<header.length;i++){
+                if(header[i].split('-')[0] == lastMonthValues){
+                    a.push(i);
+                    dates.push(header[i]);
+                    headers.push(header[i])
+                }
             }
-            // console.log(dates);
+            
         } 
-        else {
-            // Assuming it's "monthly" option
-            headers = ["Product", "Unit of Measurement", "Oct-2022", "Nov-2022", "Dec-2022", "Jan-2023", "Feb-2023", "Mar-2023", "Apr-2023", "May-2023", "Jun-2023", "Jul-2023", "Aug-2023", "Sep-2023"];
-            var dates = [];
-            for (var k = 2; k < headers.length; k++) {
-                dates.push(headers[k]);
-            }
-        }
+        // else {
+        //     // Assuming it's "monthly" option
+        //     headers = ["Product", "Unit of Measurement", "Oct-2022", "Nov-2022", "Dec-2022", "Jan-2023", "Feb-2023", "Mar-2023", "Apr-2023", "May-2023", "Jun-2023", "Jul-2023", "Aug-2023", "Sep-2023"];
+        //     var dates = [];
+        //     for (var k = 2; k < headers.length; k++) {
+        //         dates.push(headers[k]);
+        //     }
+        // }
 
         for (var i = 0; i < headers.length; i++) {
             var cell = headerRow.insertCell(-1);
@@ -290,6 +413,7 @@
         // var product = selectedRow.cells[1].innerHTML;
         // console.log(product)
 
+        // console.log(k);
 
         // Add selected rows with all columns and values
         for (var j = 0; j < selectedRows.length; j++) {
@@ -303,19 +427,56 @@
                 cell.innerHTML = selectedRow.cells[k].innerHTML;
             }
 
-            // Retrieve all data for the selected item from the CSV file
-            // var lines = csvData.split("\n");
 
+            // Retrieve all data for the selected item from the CSV file
+            var lines = csvData.split("\n");
             for (var m = 0; m < lines.length; m++) {
                 var cells = lines[m].split(",");
-                if (cells.length >= 2 && cells[0] === product) {
-                    for (var n = 1; n < cells.length; n++) {
+                if (cells.length >= 2 && cells[0] === product) { 
+                    var cell = newRow.insertCell(-1);
+                    cell.innerHTML = cells[1];
+
+
+                    for (var n = 0; n < a.length; n++) {
                         var cell = newRow.insertCell(-1);
-                        cell.innerHTML = cells[n];
+                        cell.innerHTML = cells[a[n]];
                     }
                     break;
+                    
                 }
             }
+
+
+            // var lines = csvData.split("\n");
+            // for (var m = 0; m < lines.length; m++) {
+            //     var cells = lines[m].split(",");
+            //     if (cells.length >= 2 && cells[0] === product) { 
+            //         for (var n = 1; n < cells.length; n++) {
+            //             var cell = newRow.insertCell(-1);
+            //             cell.innerHTML = cells[n];
+            //         }
+            //         break;
+            //     }
+            // }
+
+            // Retrieve all data for the selected item from the CSV file
+            // for (var m = 0; m < lines.length; m++) {
+            //     var cells = lines[m].split(",");
+            //     if (cells.length >= 2 && cells[0] === product) {
+            //         for (var n = 1; n < cells.length; n++) {
+            //             var cell = newRow.insertCell(-1);
+            //             // Get the corresponding date for the column
+            //             var currentDate = dates[n - 1];
+            //             // Find the index of the date in the 'dates' array
+            //             var dateIndex = dates.indexOf(currentDate);
+            //             // Retrieve the price for the product at the corresponding date
+            //             var price = cells[dateIndex + 1]; // Adding 1 to skip the first cell (product name)
+            //             cell.innerHTML = price;
+            //         }
+            //         break;
+            //     }
+            // }
+
 
             // Add a heat map to each row
             addHeatMapToRow(newRow);
@@ -479,7 +640,7 @@
                 plotData.push(trace);
             }
         }
-        console.log(plotData)
+        // console.log(plotData)
 
         // Layout for the plot
         var layout = {
