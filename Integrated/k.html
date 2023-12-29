@@ -243,11 +243,11 @@ function populateTable(csv) {
     function createGPlot(csvData, dates, a, p) {
     // Create a data array for Plotly
         var plotData = [];
-
+        var rows = csvData.trim().split('\n');
         // Add traces for selected products
-        for (var j = 0; j < selectedRows.length; j++) {
-            var selectedRow = selectedRows[j].parentNode.parentNode;
-            var product = selectedRow.cells[1].textContent.trim();
+        for (var j = 0; j < p.length; j++) {
+            // var selectedRow = selectedRows[j].parentNode.parentNode;
+            var product = rows[p[j]].split(',')[0].trim();
 
             // Use getProductData to get the data for the product
             var productData = getProductData(product, csvData, a);
