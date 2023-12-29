@@ -240,7 +240,7 @@ function populateTable(csv) {
         return colors[index];
     }
 
-    function createPlot(selectedRows, csvData, dates,a ) {
+    function createGPlot(csvData, dates, a, p) {
     // Create a data array for Plotly
         var plotData = [];
 
@@ -301,21 +301,6 @@ function populateTable(csv) {
                     return prices;
                 }
             }
-    }
-
-    function selectAll() {
-        var checkboxes = document.querySelectorAll("#csvTable input[type='checkbox']");
-        for (var i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked = true;
-        }
-    }
-
-    // Function to deselect all checkboxes
-    function deselectAll() {
-        var checkboxes = document.querySelectorAll("#csvTable input[type='checkbox']");
-        for (var i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked = false;
-        }
     }
 
     function updateAtAGlance() {
@@ -472,7 +457,7 @@ function populateTable(csv) {
 
         for (var j = 0; j < p.length; j++) {
             // var selectedRow = selectedRows[j];
-            var product = rows[j].split(',')[0].trim();
+            var product = rows[p[j]].split(',')[0].trim();
 
             var newRow = newTable.insertRow(-1);
 
@@ -503,6 +488,10 @@ function populateTable(csv) {
             addHeatMapToRow(newRow);
         }
         selectedTable.appendChild(newTable);
+
+        if (viewByOption ==="yearly") {
+            createGPlot(csvData, dates,a,p);
+        }
     
     }
 
