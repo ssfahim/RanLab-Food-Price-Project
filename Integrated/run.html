@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 25px;
         }
         p {
             font-size: 18px; /* Adjust the size as needed */
@@ -61,9 +61,17 @@
             bottom: 0;
             z-index: -1;
         }
+
+        input[type="checkbox"] {
+            width: 24px; /* Adjust the width as needed */
+            height: 24px; /* Adjust the height as needed */
+            margin: 0; /* Remove any default margin */
+        }
+
         select {
             font-size: 16px; /* Adjust the size as needed */
             padding: 8px;    /* Adjust the padding as needed */
+            margin-left: 2px;
         }
         /* Increase the size of the buttons */
         button {
@@ -72,41 +80,85 @@
         }
 
         #atAGlance {
-            margin-top: 20px;
+            margin-top: 15px;
+            margin-left: 2px;
         }
         #menu-container {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #f2f2f2;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow-y: auto; /* Enable vertical scroll if needed */
-            z-index: 1; /* Ensure menu appears above other elements */
+            margin-bottom: 20px; /* Add space between menus */
+            width: 100%;
+            height: 100vh;
+            background: #888;
+            position: relative;
+            overflow: hidden;
         }
         .menu {
-            margin-bottom: 20px; /* Add space between menus */
+            margin-bottom: 20px; 
+            width: 100%;
+            height: 100vh;
+            background: #888;
+            position: relative;
+            overflow: hidden;
         }
         #content {
             margin-right: 270px; /* Adjust margin to accommodate the menu width */
             padding: 20px;
         }
 
+        .newRowClass {
+            animation: fadeInFromBottom 0.8s ease-in-out;
+        }
+        
+        #menuWindow {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 2px solid #302e2e;
+            box-shadow: 0 25px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            margin: 40px;
+            height: 350px;
+            width: 30%;
+            overflow-y: auto;
+        }
+
+        /* Style for the close button */
+        .closeButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .menuBox {
+            border: 2px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 92%;
+            /* height: 100px; */
+            overflow-y: auto;
+            cursor: pointer;
+        }
+        .menuBox:active {
+            background-color: #e6e6e6; /* Change background color on click */
+            transition: background-color 0.3s; /* Add a smooth transition effect */
+        }
+
         @keyframes fadeInFromBottom {
-            from {
-                transform: translateY(50px);
+            0% {
                 opacity: 0;
+                transform: translateY(50px);
             }
-            to {
-                transform: translateY(0);
+            100% {
                 opacity: 1;
+                transform: translateY(0);
             }
         }
-        .selectedTable tr {
-            animation: fadeInFromBottom 0.5s ease-out;
-        }
+
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -215,10 +267,55 @@
     </div>
 </div> -->
 
+
+
 <button onclick="updateAndVisualize()">Update & Visualize</button>
 <button onclick="selectAll()">Select All</button>
 <button onclick="deselectAll()">Deselect All</button>
 <button onclick="resetPage()">Reset</button>
+<button id="menuButton" onclick="openMenu()">Menu</button>
+
+    <!-- Hovering window for the menu -->
+<div id="menuWindow">
+    <span onclick="closeMenu()" class="closeButton">×</span>
+    <div class="menuBox" onclick="openMenu('ChristmasMenu')">
+        <h2>Christmas Menu</h2>
+        <ul>
+            <li>Appetizer: Roasted Chestnuts</li>
+            <li>Main Course: Honey Glazed Ham</li>
+            <li>Dessert: Christmas Pudding</li>
+        </ul>
+    </div>
+
+    <!-- Special Occasion Menu Box -->
+    <div class="menuBox" onclick="openMenu('SpecialOccasionMenu')">
+        <h2>Special Occasion Menu</h2>
+        <ul>
+            <li>Appetizer: Shrimp Cocktail</li>
+            <li>Main Course: Filet Mignon</li>
+            <li>Side Dish: Garlic Parmesan Asparagus</li>
+            <li>Dessert: Chocolate Fondue</li>
+        </ul>
+    </div>
+
+    <div class="menuBox" onclick="openMenu()">
+        <h2>Special Occasion Menu</h2>
+        <ul>
+            <li>Appetizer: Shrimp Cocktail</li>
+            <li>Main Course: Filet Mignon</li>
+            <li>Side Dish: Garlic Parmesan Asparagus</li>
+            <li>Dessert: Chocolate Fondue</li>
+        </ul>
+    </div>
+</div>
+<!-- <button >Menu</button> -->
+<!-- <div id="menu">
+    <div class="contents">
+        <button >Menu</button>
+    </div>
+</div> -->
+
+
 
 <div id="selectedTable"></div>
 <div id="chart"></div>
@@ -438,13 +535,14 @@
             var cell = headerRow.insertCell(-1);
             cell.innerHTML = headers[i];
         }
-
+        var newRow;
         // Add selected rows with all columns and values
         for (var j = 0; j < selectedRows.length; j++) {
             var selectedRow = selectedRows[j].parentNode.parentNode;
             var product = selectedRow.cells[1].innerHTML;
 
-            var newRow = newTable.insertRow(-1);
+            newRow = newTable.insertRow(-1);
+            // newRow.classList.add("newRowClass");
 
             for (var k = 1; k < selectedRow.cells.length; k++) {
                 var cell = newRow.insertCell(-1);
@@ -457,6 +555,7 @@
                 var cells = lines[m].split(",");
                 if (cells.length >= 2 && cells[0] === product) { 
                     var cell = newRow.insertCell(-1);
+                    // newRow.classList.add("newRowClass");
                     cell.innerHTML = cells[1];
                     for (var n = 0; n < a.length; n++) {
                         var cell = newRow.insertCell(-1);
@@ -467,8 +566,10 @@
                 }
             }
             // Add a heat map to each row
+            // newRow.classList.add("newRowClass");
             addHeatMapToRow(newRow);
         }
+        newRow.classList.add("newRowClass");
         selectedTable.appendChild(newTable);
 
         // // Create Plotly marker+line chart
@@ -526,9 +627,7 @@
     }
 
     function createPlot(selectedRows, csvData, dates,a ) {
-    // Create a data array for Plotly
         var plotData = [];
-
         // Add traces for selected products
         for (var j = 0; j < selectedRows.length; j++) {
             var selectedRow = selectedRows[j].parentNode.parentNode;
@@ -549,8 +648,6 @@
                 plotData.push(trace);
             }
         }
-        // console.log(plotData)
-
         // Layout for the plot
         var layout = {
             title: 'Product Prices Over Time',
@@ -569,7 +666,6 @@
                 zerolinecolor: 'black'
             }
         };
-
         // Plot the data
         Plotly.newPlot('chart', plotData, layout);
     }
@@ -607,15 +703,107 @@
         location.reload(); // This reloads the current page
     }
 
+    function openMenu(menuType) {
+        var menuWindow = document.getElementById("menuWindow");
+        menuWindow.style.display = "block";
+
+        // Get the content container
+        var menuContent = document.getElementById("selectedTable");
+        menuContent.innerHTML = ""; // Clear previous content
+
+        // Populate content based on the selected menu
+        switch (menuType) {
+            case "ChristmasMenu":
+                var lst = `
+                Peanuts,Almonds,Pork loin cuts,Carrots,White bread,Milk,Potatos
+                `;
+                populateMenu(menuContent, lst);
+                break;
+            case "SpecialOccasionMenu":
+                populateMenu(menuContent, "Shrimp Cocktail", "Filet Mignon", "Garlic Parmesan Asparagus", "Chocolate Fondue");
+                break;
+            // Add more cases for additional menus if needed
+        }
+    }
+
+    // Function to populate menu content
+    function populateMenu(container,lst) {
+        var lines = csvData.split("\n");
+
+        var newTable = document.createElement("table");
+        newTable.classList.add("selectedTable");
+
+        var headerRow = newTable.insertRow(-1);
+
+        var rows = csvData.trim().split('\n');
+        var header= rows[0].split(',');
+        var headers = [];
+        headers.push(rows[0].split(',')[0],rows[0].split(',')[1]);
+        var dates = [];
+        var a = [];
+        var p = [];
+
+        var lastMonthIndex = header[header.length - 1];
+        var lastMonthValues = lastMonthIndex.split('-')[0];
+
+        for (let i = 0; i<header.length;i++){
+            if(header[i].split('-')[0] == lastMonthValues){
+                a.push(i);
+                dates.push(header[i]);
+                headers.push(header[i])
+            }
+        }
+        var r = lst.trim().split(',');
+        cases(rows, r, p)
+
+        for (var i = 0; i < headers.length; i++) {
+            var cell = headerRow.insertCell(-1);
+            cell.innerHTML = headers[i];
+        }
+
+        // Add selected rows with all columns and values
+        for (var j = 0; j < p.length; j++) {
+            // var selectedRow = selectedRows[j];
+            var product = rows[p[j]].split(',')[0].trim();
+            var newRow = newTable.insertRow(-1);
+
+            // Retrieve all data for the selected item from the CSV file
+            // var lines = csvData.split("\n");
+            for (var m = 0; m < lines.length; m++) {
+                var cells = lines[m].split(",");
+                if (cells.length >= 2 && cells[0] === product) { 
+                    var cell = newRow.insertCell(-1);
+                    cell.innerHTML = cells[0];
+                    var cell = newRow.insertCell(-1);
+                    cell.innerHTML = cells[1];
+
+                    for (var n = 0; n < a.length; n++) {
+                        var cell = newRow.insertCell(-1);
+                        cell.innerHTML = cells[a[n]];
+                        // prices.push(cells[a[n]]);
+                    }
+                    break;
+                }
+            }
+            // Add a heat map to each row
+            addHeatMapToRow(newRow);
+        }
+
+        container.appendChild(newTable);
+        createGPlot(csvData, dates,a,p);
+    }
+
+    function closeMenu() {
+        var menuWindow = document.getElementById("menuWindow");
+        menuWindow.style.display = "none";
+    }
+
     function createGPlot(csvData, dates, a, p) {
-    // Create a data array for Plotly
         var plotData = [];
         var rows = csvData.trim().split('\n');
         // Add traces for selected products
         for (var j = 0; j < p.length; j++) {
-            // var selectedRow = selectedRows[j].parentNode.parentNode;
             var product = rows[p[j]].split(',')[0].trim();
-
             // Use getProductData to get the data for the product
             var productData = getProductData(product, csvData, a);
 
@@ -738,7 +926,6 @@
                 }
             }
             switches(selectedOption,rows,p);
-            
         }
 
         else if(viewByOption.includes("monthly")){
@@ -750,9 +937,7 @@
             }
 
             switches(selectedOption,rows,p);
-
-            // var selectedYear = document.getElementById("year").value;
-            
+            // var selectedYear = document.getElementById("year").value;           
         }
         // console.log('header',header)
         console.log('headers',headers)
@@ -775,6 +960,7 @@
             // var selectedRow = selectedRows[j];
             var product = rows[p[j]].split(',')[0].trim();
             var newRow = newTable.insertRow(-1);
+            newRow.classList.add("newRowClass");
 
             // Retrieve all data for the selected item from the CSV file
             // var lines = csvData.split("\n");
@@ -876,7 +1062,7 @@
     Meatless burgers,Frozen french fried potatoes,Frozen green beans,Frozen broccoli,Frozen corn,Frozen mixed vegetables,Frozen peas,Frozen pizza,Frozen spinach,Frozen strawberries
     `;
     var dairy = `
-    Milk,Milk,Soy milk,Eggs,Nut milk,Cream,Butter,Margarine,Block cheese,Yogurt
+    Milk,Milk(2),Soy milk,Eggs,Nut milk,Cream,Butter,Margarine,Block cheese,Yogurt
     `;
     var canned = `
     Canned salmon,Canned tuna,Canned baked beans,Canned tomatoes,Canned soup,Canned beans and lentils,Canned corn,Canned peach,Canned pear
@@ -903,7 +1089,7 @@ Wieners,500 grams,2.81,2.77,2.81,2.47,2.66,2.55,2.51,2.53,2.75,3,2.97,3.21,2.84,
 Salmon,per kilogram,20.53,20.77,21.3,20.25,21.11,20.8,20.55,20.14,20.05,19.91,19.82,19.5,20.06,19.93,20.11,20.32,20.28,20.43,21.19,20.77,19.92,20.27,21.16,20.19,20.96,20.85,21.13,20.48,20.49,20.54,20.4,20.62,20.13,19.93,20.76,19.9,20.36,22.15,22.87,22.16,22.46,22.31,21.3,20.61,21.37,21.62,22.38,18.55,21.56,21.32,21.8,21.33,21.82,21.99,22.34,22.35,22.21,22.43,22.22,21.46,23.58,23.39,23.58,23.65,25.83,26.01,26.57,26.29,25.66,22.89,23.71,22.41,24.63,25.01,25.97,24.38,27.17,27.74,28.03,26.52,26.67
 Shrimp,grams,6.3,6.63,6.87,6.66,6.74,8.09,7.36,7.11,7.51,6.73,6.8,7.34,6.35,6.99,7.35,6.84,7.02,8.48,7.47,6.73,6.61,6.7,6.98,7.53,6.67,6.59,6.68,6.58,7.36,6.94,6.62,6.94,6.98,6.81,6.8,6.95,7,6.61,6.54,6.56,6.94,6.42,6.23,6.57,6.96,6.74,6.89,6.8,6.14,6.59,6.16,6.71,6.91,6.56,6.62,6.72,6.9,7.5,7.55,7.72,7.3,8.05,7.54,7.84,8.31,7.98,7.8,7.77,7.53,7.8,7.3,8.22,7.83,7.45,7.81,7.59,7.75,7.79,7.69,7.81,8.16
 Milk,1 litre,2.79,2.81,2.82,2.82,2.82,2.82,2.81,2.8,2.8,2.81,2.82,2.82,2.81,2.82,2.8,2.8,2.79,2.81,2.82,2.84,2.94,2.98,2.96,2.96,2.98,2.98,2.98,2.97,2.95,2.96,2.94,2.95,2.95,2.95,2.97,2.97,3,3,3.06,3.02,3.01,3,3.01,3.01,3.04,3.05,3.04,3.05,3.08,3.16,3.16,3.15,3.15,3.15,3.15,3.13,3.14,3.16,3.16,3.17,3.16,3.31,3.34,3.35,3.34,3.35,3.34,3.34,3.47,3.45,3.46,3.46,3.45,3.56,3.59,3.58,3.55,3.59,3.58,3.56,3.56
-Milk,2 litres,3.76,3.78,3.77,3.78,3.76,3.74,3.76,3.75,3.74,3.72,3.73,3.74,3.74,3.75,3.72,3.73,3.73,3.72,3.74,3.72,3.7,3.71,3.7,3.69,3.68,3.69,3.69,3.68,3.68,3.69,3.7,3.69,3.68,3.68,3.68,3.69,3.72,3.75,3.78,3.78,3.79,3.79,3.81,3.82,3.86,3.86,3.83,3.79,3.79,3.88,3.9,3.91,3.92,3.92,3.93,3.94,3.92,3.91,3.92,3.93,3.92,4.18,4.21,4.21,4.22,4.25,4.49,4.52,4.75,4.7,4.72,4.75,4.73,4.91,4.95,4.94,4.95,4.97,4.99,4.98,4.95
+Milk(2),2 litres,3.76,3.78,3.77,3.78,3.76,3.74,3.76,3.75,3.74,3.72,3.73,3.74,3.74,3.75,3.72,3.73,3.73,3.72,3.74,3.72,3.7,3.71,3.7,3.69,3.68,3.69,3.69,3.68,3.68,3.69,3.7,3.69,3.68,3.68,3.68,3.69,3.72,3.75,3.78,3.78,3.79,3.79,3.81,3.82,3.86,3.86,3.83,3.79,3.79,3.88,3.9,3.91,3.92,3.92,3.93,3.94,3.92,3.91,3.92,3.93,3.92,4.18,4.21,4.21,4.22,4.25,4.49,4.52,4.75,4.7,4.72,4.75,4.73,4.91,4.95,4.94,4.95,4.97,4.99,4.98,4.95
 Soy milk,1.89 litres,3.98,3.96,4.07,3.99,3.88,4.07,4.13,3.9,3.97,3.86,4.07,3.89,3.78,3.85,3.9,3.67,3.77,3.7,3.88,3.63,3.58,3.69,3.78,3.84,3.67,3.97,4,3.76,3.94,3.9,3.89,3.84,3.83,3.77,3.77,4.02,3.84,3.84,3.98,3.81,4.08,3.84,3.9,3.97,3.97,4.1,3.78,3.96,3.78,3.96,3.92,3.79,4.05,4.19,3.99,4.04,3.96,3.77,3.7,4.04,3.84,3.99,4.18,4.11,4.31,4.37,4.36,4.22,4.34,3.92,4.44,4.34,4.65,4.44,4.34,4.74,4.44,4.64,4.33,4.51,4.75
 Eggs,dozen,3.4,3.43,3.52,3.47,3.33,3.28,3.63,3.47,3.41,3.56,3.34,3.49,3.09,3.61,3.36,3.5,3.37,3.48,3.53,3.67,3.52,3.38,3.47,3.16,3.45,3.57,3.29,3.26,3.45,3.43,3.33,3.45,3.59,3.59,3.51,3.32,3.64,3.36,3.3,3.94,3.96,3.97,4.01,4.06,4.05,4.08,4.07,4.06,4.05,4.1,4.23,4.24,4.26,4.26,3.59,4.34,3.77,4.37,4.08,4.47,4.26,4.24,4.28,4.75,4.85,4.53,5.02,5.04,5.09,5.12,4.56,4.79,4.43,4.79,4.2,5.01,5.06,5.09,5.16,4.87,4.65
 Nut milk,1.89 litres,3.85,3.95,3.91,3.88,3.96,3.99,4.01,3.88,3.95,3.88,3.99,3.88,3.83,3.76,3.76,3.63,3.77,3.68,3.83,3.7,3.64,3.7,3.76,3.78,3.66,3.86,3.89,3.8,3.87,3.91,3.93,3.73,3.74,3.8,3.79,3.9,3.81,3.86,3.98,3.88,3.95,3.89,3.9,3.95,3.93,4.04,3.93,4.03,3.88,4,3.97,3.86,4.03,4.12,4.02,4.01,3.99,3.85,3.8,4.03,3.93,4,4.08,4.11,4.26,4.39,4.26,4.31,4.34,4.38,4.38,4.36,4.6,4.42,4.4,4.7,4.44,4.73,4.36,4.45,6
@@ -1018,7 +1204,7 @@ Wieners,per kilogram,5.62,5.54,5.62,4.94,5.32,5.10,5.02,5.06,5.50,6.00,5.94,6.42
 Salmon,per kilogram,20.53,20.77,21.30,20.25,21.11,20.80,20.55,20.14,20.05,19.91,19.82,19.50,20.06,19.93,20.11,20.32,20.28,20.43,21.19,20.77,19.92,20.27,21.16,20.19,20.96,20.85,21.13,20.48,20.49,20.54,20.40,20.62,20.13,19.93,20.76,19.90,20.36,22.15,22.87,22.16,22.46,22.31,21.30,20.61,21.37,21.62,22.38,18.55,21.56,21.32,21.80,21.33,21.82,21.99,22.34,22.35,22.21,22.43,22.22,21.46,23.58,23.39,23.58,23.65,25.83,26.01,26.57,26.29,25.66,22.89,23.71,22.41,24.63,25.01,25.97,24.38,27.17,27.74,28.03,26.52,26.67
 Shrimp,grams,6.30,6.63,6.87,6.66,6.74,8.09,7.36,7.11,7.51,6.73,6.80,7.34,6.35,6.99,7.35,6.84,7.02,8.48,7.47,6.73,6.61,6.70,6.98,7.53,6.67,6.59,6.68,6.58,7.36,6.94,6.62,6.94,6.98,6.81,6.80,6.95,7.00,6.61,6.54,6.56,6.94,6.42,6.23,6.57,6.96,6.74,6.89,6.80,6.14,6.59,6.16,6.71,6.91,6.56,6.62,6.72,6.90,7.50,7.55,7.72,7.30,8.05,7.54,7.84,8.31,7.98,7.80,7.77,7.53,7.80,7.30,8.22,7.83,7.45,7.81,7.59,7.75,7.79,7.69,7.81,8.16
 Milk,1 liter,2.79,2.81,2.82,2.82,2.82,2.82,2.81,2.80,2.80,2.81,2.82,2.82,2.81,2.82,2.80,2.80,2.79,2.81,2.82,2.84,2.94,2.98,2.96,2.96,2.98,2.98,2.98,2.97,2.95,2.96,2.94,2.95,2.95,2.95,2.97,2.97,3.00,3.00,3.06,3.02,3.01,3.00,3.01,3.01,3.04,3.05,3.04,3.05,3.08,3.16,3.16,3.15,3.15,3.15,3.15,3.13,3.14,3.16,3.16,3.17,3.16,3.31,3.34,3.35,3.34,3.35,3.34,3.34,3.47,3.45,3.46,3.46,3.45,3.56,3.59,3.58,3.55,3.59,3.58,3.56,3.56
-Milk,per liter,1.88,1.89,1.89,1.89,1.88,1.87,1.88,1.88,1.87,1.86,1.87,1.87,1.87,1.88,1.86,1.87,1.87,1.86,1.87,1.86,1.85,1.86,1.85,1.85,1.84,1.85,1.85,1.84,1.84,1.85,1.85,1.85,1.84,1.84,1.84,1.85,1.86,1.88,1.89,1.89,1.90,1.90,1.91,1.91,1.93,1.93,1.92,1.90,1.90,1.94,1.95,1.96,1.96,1.96,1.97,1.97,1.96,1.96,1.96,1.97,1.96,2.09,2.11,2.11,2.11,2.13,2.25,2.26,2.38,2.35,2.36,2.38,2.37,2.46,2.48,2.47,2.48,2.49,2.50,2.49,2.48
+Milk(2),per liter,1.88,1.89,1.89,1.89,1.88,1.87,1.88,1.88,1.87,1.86,1.87,1.87,1.87,1.88,1.86,1.87,1.87,1.86,1.87,1.86,1.85,1.86,1.85,1.85,1.84,1.85,1.85,1.84,1.84,1.85,1.85,1.85,1.84,1.84,1.84,1.85,1.86,1.88,1.89,1.89,1.90,1.90,1.91,1.91,1.93,1.93,1.92,1.90,1.90,1.94,1.95,1.96,1.96,1.96,1.97,1.97,1.96,1.96,1.96,1.97,1.96,2.09,2.11,2.11,2.11,2.13,2.25,2.26,2.38,2.35,2.36,2.38,2.37,2.46,2.48,2.47,2.48,2.49,2.50,2.49,2.48
 Soy milk,per liter,3.98,3.96,4.07,3.99,3.88,4.07,4.13,3.90,3.97,3.86,4.07,3.89,3.78,3.85,3.90,3.67,3.77,3.70,3.88,3.63,3.58,3.69,3.78,3.84,3.67,3.97,4.00,3.76,3.94,3.90,3.89,3.84,3.83,3.77,3.77,4.02,3.84,3.84,3.98,3.81,4.08,3.84,3.90,3.97,3.97,4.10,3.78,3.96,3.78,3.96,3.92,3.79,4.05,4.19,3.99,4.04,3.96,3.77,3.70,4.04,3.84,3.99,4.18,4.11,4.31,4.37,4.36,4.22,4.34,3.92,4.44,4.34,4.65,4.44,4.34,4.74,4.44,4.64,4.33,4.51,4.75
 Eggs,dozen,3.40,3.43,3.52,3.47,3.33,3.28,3.63,3.47,3.41,3.56,3.34,3.49,3.09,3.61,3.36,3.50,3.37,3.48,3.53,3.67,3.52,3.38,3.47,3.16,3.45,3.57,3.29,3.26,3.45,3.43,3.33,3.45,3.59,3.59,3.51,3.32,3.64,3.36,3.30,3.94,3.96,3.97,4.01,4.06,4.05,4.08,4.07,4.06,4.05,4.10,4.23,4.24,4.26,4.26,3.59,4.34,3.77,4.37,4.08,4.47,4.26,4.24,4.28,4.75,4.85,4.53,5.02,5.04,5.09,5.12,4.56,4.79,4.43,4.79,4.20,5.01,5.06,5.09,5.16,4.87,4.65
 Nut milk,per liter,3.85,3.95,3.91,3.88,3.96,3.99,4.01,3.88,3.95,3.88,3.99,3.88,3.83,3.76,3.76,3.63,3.77,3.68,3.83,3.70,3.64,3.70,3.76,3.78,3.66,3.86,3.89,3.80,3.87,3.91,3.93,3.73,3.74,3.80,3.79,3.90,3.81,3.86,3.98,3.88,3.95,3.89,3.90,3.95,3.93,4.04,3.93,4.03,3.88,4.00,3.97,3.86,4.03,4.12,4.02,4.01,3.99,3.85,3.80,4.03,3.93,4.00,4.08,4.11,4.26,4.39,4.26,4.31,4.34,4.38,4.38,4.36,4.60,4.42,4.40,4.70,4.44,4.73,4.36,4.45,6.00
