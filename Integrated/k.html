@@ -115,7 +115,7 @@
     </table>
 </div>
 
-<div>
+<!-- <div>
     <label for="viewBy">View by:</label>
     <select id="viewBy" onchange="updateAtAGlance()">
         <option value="yearly">Yearly Store Price</option>
@@ -137,7 +137,7 @@
         <option value="2022">2022</option>
         <option value="2023">2023</option>
     </select>
-</div>
+</div> -->
 
 <div>
     <label for="atAGlance">At a Glance:</label>
@@ -152,9 +152,9 @@
     </select>
 </div>
 
-<div id="yearDrop" style="display: none;">
-    <label for="viewBy">View by:</label>
-    <select id="viewBy" onchange="updateAndVisualize()">
+<div id="priceView" style="display: none;">
+    <label for="view">View by:</label>
+    <select id="view" onchange="updateAtAGlance()">
         <option value="yearly">Yearly Store Price</option>
         <option value="yearlyStan">Yearly Standard Price</option>
         <option value="monthly">Monthly Store Price (Past 12 months)</option>
@@ -162,9 +162,9 @@
     </select>
 </div>
 
-<div id="yearDropdow" style="display: none;">
-    <label for="year">Select Year:</label>
-    <select id="year" onchange="updateAndVisualize()">
+<div id="yearDrop" style="display: none;">
+    <label for="years">Select Year:</label>
+    <select id="years" onchange="updateAtAGlance()">
         <option value="none">Select an option</option>
         <option value="2017">2017</option>
         <option value="2018">2018</option>
@@ -236,27 +236,6 @@
         <option value="2023">2023</option>
     </select>
 </div> -->
-
-<!-- <div id="menu-container">
-    <div class="menu">
-        <h2>Christmas Dinner Menu</h2>
-        <ul>
-            <li>Appetizer: Roasted Chestnuts</li>
-            <li>Main Course: Roast Turkey with Stuffing</li>
-            <li>Side Dish: Mashed Potatoes</li>
-            <li>Dessert: Christmas Pudding</li>
-        </ul>
-    </div>
-
-    <div class="menu">
-        <h2>Special Occasion Menu</h2>
-        <ul>
-            <li>Appetizer: Shrimp Cocktail</li>
-            <li>Main Course: Filet Mignon</li>
-            <li>Side Dish: Garlic Parmesan Asparagus</li>
-            <li>Dessert: Chocolate Fondue</li>
-        </ul>
-    </div>
 
 <button onclick="updateAndVisualize()">Update & Visualize</button>
 <button onclick="selectAll()">Select All</button>
@@ -409,12 +388,36 @@ function populateTable(csv) {
             }
     }
 
+    function monthlyCases(selectedYear,header,a,dates,headers){
+        for (let i = 0; i < header.length; i++) {
+            if (header[i].split('-')[1] == parseInt(selectedYear,10)) {
+                a.push(i);
+                dates.push(header[i]);
+                headers.push(header[i]);
+            }
+        }
+    }
+
     function updateAtAGlance() {
         var selectedTable = document.getElementById("selectedTable");
         selectedTable.innerHTML = "";
         
         var selectedOption = document.getElementById("atAGlance").value;
-        var viewByOption = document.getElementById("viewBy").value;
+        var viewByOption = document.getElementById("view").value;
+
+        var yearDropdown = document.getElementById("yearDrop");
+        var priceView = document.getElementById("priceView");
+
+        if (selectedOption.value !== "none") {
+            // Display the yearDrop and yearDropdow div elements
+            priceView.style.display = "block";
+            yearDropdown.style.display = "block";
+        } else {
+            // Hide the yearDrop and yearDropdow div elements
+            priceView.style.display = "none";
+            yearDropdown.style.display = "none";
+        }
+
         // var csvFile, csvData;
 
         // Dynamically construct the file name based on the selected options
@@ -437,6 +440,7 @@ function populateTable(csv) {
                     break;
                 default:
                     var lines = csvData.split("\n"); // Default value
+                    var rows = csvData.trim().split('\n');
         }
 
         var newTable = document.createElement("table");
@@ -451,105 +455,211 @@ function populateTable(csv) {
         var dates = [];
         var a = [];
         var p = [];
-    
-        if (viewByOption.includes("yearly")) {
-            var lastMonthIndex = header[header.length - 1];
-            var lastMonthValues = lastMonthIndex.split('-')[0];
-    
-            for (let i = 0; i<header.length;i++){
-                if(header[i].split('-')[0] == lastMonthValues){
-                    a.push(i);
-                    dates.push(header[i]);
-                    headers.push(header[i])
+
+        switch(viewByOption){
+            case "yearly":
+                var lastMonthIndex = header[header.length - 1];
+                var lastMonthValues = lastMonthIndex.split('-')[0];
+        
+                for (let i = 0; i<header.length;i++){
+                    if(header[i].split('-')[0] == lastMonthValues){
+                        a.push(i);
+                        dates.push(header[i]);
+                        headers.push(header[i])
+                    }
                 }
-            }
-            switches(selectedOption,rows,p);
-            // switch(selectedOption){
-            //     case "Vegetables":
-            //         var r = veg.trim().split(',');
-            //         cases(rows, r,p)
-            //         // console.log(p)
-            //         break;
-                    
-            //     case "Meat":
-            //         var s = meat.trim().split(',');
-            //         cases(rows, s,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Fruits":
-            //         var t = fruit.trim().split(',');
-            //         cases(rows, t,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Frozen":
-            //         var u = froz.trim().split(',');
-            //         cases(rows, u,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Dairy":
-            //         var v = dairy.trim().split(',');
-            //         cases(rows, v,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Canned":
-            //         var w = canned.trim().split(',');
-            //         cases(rows, w,p)
-            //         // console.log(p)
-            //         break;
-            //         // default:
-            //         //     console.error("Unexpected selectedOption:", selectedOption);
-            // }
-            
+                switches(selectedOption,rows,p);
+                break;
+            case "yearlyStan":
+                var lastMonthIndex = header[header.length - 1];
+                var lastMonthValues = lastMonthIndex.split('-')[0];
+        
+                for (let i = 0; i<header.length;i++){
+                    if(header[i].split('-')[0] == lastMonthValues){
+                        a.push(i);
+                        dates.push(header[i]);
+                        headers.push(header[i])
+                    }
+                }
+                switches(selectedOption,rows,p);
+                break;
+            case "monthly":
+                var selectedYear = document.getElementById("years").value;
+                switch (selectedYear) {
+                    case "2017":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2018":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2019":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2020":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2021":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2022":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2023":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    default:
+                        var lastMonthIndex = header[header.length - 1];
+                        for (let i = (header.length - 1) - 11; i < header.length; i++) {
+                            a.push(i);
+                            dates.push(header[i]);
+                            headers.push(header[i]);
+                        }
+                        break;
+                }
+
+                switches(selectedOption,rows,p);
+                break;
+            case "monthlyStan":
+                var selectedYear = document.getElementById("years").value;
+                switch (selectedYear) {
+                    case "2017":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2018":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2019":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2020":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2021":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2022":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2023":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    default:
+                        var lastMonthIndex = header[header.length - 1];
+                        for (let i = (header.length - 1) - 11; i < header.length; i++) {
+                            a.push(i);
+                            dates.push(header[i]);
+                            headers.push(header[i]);
+                        }
+                        break;
+                }
+
+                switches(selectedOption,rows,p);
+                break;
+            default: 
+                var lastMonthIndex = header[header.length - 1];
+                var lastMonthValues = lastMonthIndex.split('-')[0];
+        
+                for (let i = 0; i<header.length;i++){
+                    if(header[i].split('-')[0] == lastMonthValues){
+                        a.push(i);
+                        dates.push(header[i]);
+                        headers.push(header[i])
+                    }
+                }
+                switches(selectedOption,rows,p);
+                break;
         }
-
-        else if(viewByOption.includes("monthly")){
-            var lastMonthIndex = header[header.length - 1];
-            for (let i = (header.length - 1) - 11 ; i<header.length;i++){
-                a.push(i);
-                dates.push(header[i]);
-                headers.push(header[i])  
-            }
-
-            switches(selectedOption,rows,p);
-
-            // var selectedYear = document.getElementById("year").value;
-            
-            // switch(selectedOption){
-            //     case "Vegetables":
-            //         var r = veg.trim().split(',');
-            //         cases(rows, r,p)
-            //         // console.log(p)
-            //         break;
+    
+        // if (viewByOption.includes("yearly")) {
+        //     var lastMonthIndex = header[header.length - 1];
+        //     var lastMonthValues = lastMonthIndex.split('-')[0];
+    
+        //     for (let i = 0; i<header.length;i++){
+        //         if(header[i].split('-')[0] == lastMonthValues){
+        //             a.push(i);
+        //             dates.push(header[i]);
+        //             headers.push(header[i])
+        //         }
+        //     }
+        //     switches(selectedOption,rows,p);
+        //     // switch(selectedOption){
+        //     //     case "Vegetables":
+        //     //         var r = veg.trim().split(',');
+        //     //         cases(rows, r,p)
+        //     //         // console.log(p)
+        //     //         break;
                     
-            //     case "Meat":
-            //         var s = meat.trim().split(',');
-            //         cases(rows, s,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Fruits":
-            //         var t = fruit.trim().split(',');
-            //         cases(rows, t,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Frozen":
-            //         var u = froz.trim().split(',');
-            //         cases(rows, u,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Dairy":
-            //         var v = dairy.trim().split(',');
-            //         cases(rows, v,p)
-            //         // console.log(p)
-            //         break;
-            //     case "Canned":
-            //         var w = canned.trim().split(',');
-            //         cases(rows, w,p)
-            //         // console.log(p)
-            //         break;
-            //         // default:
-            //         //     console.error("Unexpected selectedOption:", selectedOption);
-            // }
-        }
+        //     //     case "Meat":
+        //     //         var s = meat.trim().split(',');
+        //     //         cases(rows, s,p)
+        //     //         // console.log(p)
+        //     //         break;
+        //     //     case "Fruits":
+        //     //         var t = fruit.trim().split(',');
+        //     //         cases(rows, t,p)
+        //     //         // console.log(p)
+        //     //         break;
+        //     //     case "Frozen":
+        //     //         var u = froz.trim().split(',');
+        //     //         cases(rows, u,p)
+        //     //         // console.log(p)
+        //     //         break;
+        //     //     case "Dairy":
+        //     //         var v = dairy.trim().split(',');
+        //     //         cases(rows, v,p)
+        //     //         // console.log(p)
+        //     //         break;
+        //     //     case "Canned":
+        //     //         var w = canned.trim().split(',');
+        //     //         cases(rows, w,p)
+        //     //         // console.log(p)
+        //     //         break;
+        //     //         // default:
+        //     //         //     console.error("Unexpected selectedOption:", selectedOption);
+        //     // }
+            
+        // }
+
+        // else if(viewByOption.includes("monthly")){
+        //     var selectedYear = document.getElementById("years").value;
+        //     switch (selectedYear) {
+        //         case "2017":
+        //             monthlyCases(selectedYear,header,a,dates,headers)
+        //             break;
+        //         case "2018":
+        //             monthlyCases(selectedYear,header,a,dates,headers)
+        //             break;
+        //         case "2019":
+        //             monthlyCases(selectedYear,header,a,dates,headers)
+        //             break;
+        //         case "2020":
+        //             monthlyCases(selectedYear,header,a,dates,headers)
+        //             break;
+        //         case "2021":
+        //             monthlyCases(selectedYear,header,a,dates,headers)
+        //             break;
+        //         case "2022":
+        //             monthlyCases(selectedYear,header,a,dates,headers)
+        //             break;
+        //         case "2023":
+        //             monthlyCases(selectedYear,header,a,dates,headers)
+        //             break;
+        //         default:
+        //             var lastMonthIndex = header[header.length - 1];
+        //             for (let i = (header.length - 1) - 11; i < header.length; i++) {
+        //                 a.push(i);
+        //                 dates.push(header[i]);
+        //                 headers.push(header[i]);
+        //             }
+        //             break;
+        //     }
+
+        //     switches(selectedOption,rows,p);
+
+        //     // var selectedYear = document.getElementById("year").value;
+            
+            
+        // }
         // console.log('header',header)
         console.log('headers',headers)
         console.log('dates',dates)
