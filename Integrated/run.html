@@ -220,9 +220,9 @@
         </select>
     </div>
     
-    <div id="yearDrop" style="display: none;">
-        <label for="viewBy">View by:</label>
-        <select id="viewBy" onchange="updateAndVisualize()">
+    <div id="priceView" style="display: none;">
+        <label for="view">View by:</label>
+        <select id="view" onchange="updateAtAGlance()">
             <option value="yearly">Yearly Store Price</option>
             <option value="yearlyStan">Yearly Standard Price</option>
             <option value="monthly">Monthly Store Price (Past 12 months)</option>
@@ -230,9 +230,9 @@
         </select>
     </div>
     
-    <div id="yearDropdow" style="display: none;">
-        <label for="year">Select Year:</label>
-        <select id="year" onchange="updateAndVisualize()">
+    <div id="yearDrop" style="display: none;">
+        <label for="years">Select Year:</label>
+        <select id="years" onchange="updateAtAGlance()">
             <option value="none">Select an option</option>
             <option value="2017">2017</option>
             <option value="2018">2018</option>
@@ -308,14 +308,6 @@
         </ul>
     </div>
 </div>
-<!-- <button >Menu</button> -->
-<!-- <div id="menu">
-    <div class="contents">
-        <button >Menu</button>
-    </div>
-</div> -->
-
-
 
 <div id="selectedTable"></div>
 <div id="chart"></div>
@@ -361,6 +353,28 @@
         }
     }
 
+    function monthlyCases(selectedYear,header,a,dates,headers){
+        for (let i = 0; i < header.length; i++) {
+            if (header[i].split('-')[1] == parseInt(selectedYear,10)) {
+                a.push(i);
+                dates.push(header[i]);
+                headers.push(header[i]);
+            }
+        }
+    }
+
+    function yearlyCases(header,a,dates,headers){
+        var lastMonthIndex = header[header.length - 1];
+        var lastMonthValues = lastMonthIndex.split('-')[0];
+
+        for (let i = 0; i<header.length;i++){
+            if(header[i].split('-')[0] == lastMonthValues){
+                a.push(i);
+                dates.push(header[i]);
+                headers.push(header[i])
+            }
+        }
+    }
     
     function updateAndVisualize() {
         var selectedTable = document.getElementById("selectedTable");
@@ -412,19 +426,13 @@
         var prices = [];
 
 
-
         if (viewBy.includes("yearly")) {
-            var lastMonthIndex = header[header.length - 1];
-            var lastMonthValues = lastMonthIndex.split('-')[0];
-    
-            for (let i = 0; i<header.length;i++){
-                if(header[i].split('-')[0] == lastMonthValues){
-                    a.push(i);
-                    dates.push(header[i]);
-                    headers.push(header[i])
-                }
-            }
-        } 
+            yearlyCases(header,a,dates,headers)
+        }
+        
+        else if (viewBy.includes("yearlyStan")){
+            yearlyCases(header,a,dates,headers)
+        }
 
         else if (viewBy.includes("monthly")){
             // Assuming it's "monthly" option
@@ -432,70 +440,29 @@
             var lastMonthValues = lastMonthIndex.split('-')[0];
 
             var selectedYear = document.getElementById("year").value;
+            // console.log('selected year is: ',typeof parseInt(selectedYear,10))
 
             switch (selectedYear) {
                 case "2017":
-                    for (let i = 0; i < header.length; i++) {
-                        if (header[i].split('-')[1] == 2017) {
-                            a.push(i);
-                            dates.push(header[i]);
-                            headers.push(header[i]);
-                        }
-                    }
+                    monthlyCases(selectedYear,header,a,dates,headers)
                     break;
                 case "2018":
-                    for (let i = 0; i < header.length; i++) {
-                            if (header[i].split('-')[1] == 2018) {
-                                a.push(i);
-                                dates.push(header[i]);
-                                headers.push(header[i]);
-                            }
-                    }
+                    monthlyCases(selectedYear,header,a,dates,headers)
                     break;
                 case "2019":
-                    for (let i = 0; i < header.length; i++) {
-                            if (header[i].split('-')[1] == 2019) {
-                                a.push(i);
-                                dates.push(header[i]);
-                                headers.push(header[i]);
-                            }
-                    }
+                    monthlyCases(selectedYear,header,a,dates,headers)
                     break;
                 case "2020":
-                    for (let i = 0; i < header.length; i++) {
-                            if (header[i].split('-')[1] == 2020) {
-                                a.push(i);
-                                dates.push(header[i]);
-                                headers.push(header[i]);
-                            }
-                    }
+                    monthlyCases(selectedYear,header,a,dates,headers)
                     break;
                 case "2021":
-                    for (let i = 0; i < header.length; i++) {
-                            if (header[i].split('-')[1] == 2021) {
-                                a.push(i);
-                                dates.push(header[i]);
-                                headers.push(header[i]);
-                            }
-                    }
+                    monthlyCases(selectedYear,header,a,dates,headers)
                     break;
                 case "2022":
-                    for (let i = 0; i < header.length; i++) {
-                            if (header[i].split('-')[1] == 2022) {
-                                a.push(i);
-                                dates.push(header[i]);
-                                headers.push(header[i]);
-                            }
-                    }
+                    monthlyCases(selectedYear,header,a,dates,headers)
                     break;
                 case "2023":
-                    for (let i = 0; i < header.length; i++) {
-                            if (header[i].split('-')[1] == 2023) {
-                                a.push(i);
-                                dates.push(header[i]);
-                                headers.push(header[i]);
-                            }
-                    }
+                    monthlyCases(selectedYear,header,a,dates,headers)
                     break;
                 default:
                     var lastMonthIndex = header[header.length - 1];
@@ -505,19 +472,6 @@
                         headers.push(header[i]);
                     }
                     break;
-            }
-        }
-
-        else if (viewBy.includes("yearlyStan")){
-            var lastMonthIndex = header[header.length - 1];
-            var lastMonthValues = lastMonthIndex.split('-')[0];
-    
-            for (let i = 0; i<header.length;i++){
-                if(header[i].split('-')[0] == lastMonthValues){
-                    a.push(i);
-                    dates.push(header[i]);
-                    headers.push(header[i])
-                }
             }
         }
 
@@ -863,21 +817,18 @@
         selectedTable.innerHTML = "";
         
         var selectedOption = document.getElementById("atAGlance").value;
-        var viewByOption = document.getElementById("viewBy").value;
+        var viewByOption = document.getElementById("view").value;
 
-        // var yearDropDiv = document.getElementById("yearDrop");
-        // var yearDropdowDiv = document.getElementById("yearDropdow");
+        var yearDropdown = document.getElementById("yearDrop");
+        var priceView = document.getElementById("priceView");
 
-        // if (selectedOption.value !== "none") {
-        //     // Display the yearDrop and yearDropdow div elements
-        //     yearDropDiv.style.display = "block";
-        //     yearDropdowDiv.style.display = "block";
-        // } else {
-        //     // Hide the yearDrop and yearDropdow div elements
-        //     yearDropDiv.style.display = "none";
-        //     yearDropdowDiv.style.display = "none";
-        // }
-
+        if (selectedOption.value !== "none") {
+            priceView.style.display = "block";
+            // yearDropdown.style.display = "block";
+        } else {
+            priceView.style.display = "none";
+            // yearDropdown.style.display = "none";
+        }
         // Dynamically construct the file name based on the selected options
         switch (viewByOption) {
             case "yearlyStan":
@@ -913,31 +864,121 @@
         var dates = [];
         var a = [];
         var p = [];
-    
-        if (viewByOption.includes("yearly")) {
-            var lastMonthIndex = header[header.length - 1];
-            var lastMonthValues = lastMonthIndex.split('-')[0];
-    
-            for (let i = 0; i<header.length;i++){
-                if(header[i].split('-')[0] == lastMonthValues){
-                    a.push(i);
-                    dates.push(header[i]);
-                    headers.push(header[i])
+
+        switch(viewByOption){
+            case "yearly":
+                var lastMonthIndex = header[header.length - 1];
+                var lastMonthValues = lastMonthIndex.split('-')[0];
+        
+                for (let i = 0; i<header.length;i++){
+                    if(header[i].split('-')[0] == lastMonthValues){
+                        a.push(i);
+                        dates.push(header[i]);
+                        headers.push(header[i])
+                    }
                 }
-            }
-            switches(selectedOption,rows,p);
-        }
+                switches(selectedOption,rows,p);
+                break;
+            case "yearlyStan":
+                var lastMonthIndex = header[header.length - 1];
+                var lastMonthValues = lastMonthIndex.split('-')[0];
+        
+                for (let i = 0; i<header.length;i++){
+                    if(header[i].split('-')[0] == lastMonthValues){
+                        a.push(i);
+                        dates.push(header[i]);
+                        headers.push(header[i])
+                    }
+                }
+                switches(selectedOption,rows,p);
+                break;
+            case "monthly":
+                var selectedYear = document.getElementById("years").value;
+                yearDropdown.style.display = viewByOption.includes("monthly") ? "block" : "none";
+                switch (selectedYear) {
+                    case "2017":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2018":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2019":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2020":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2021":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2022":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2023":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    default:
+                        var lastMonthIndex = header[header.length - 1];
+                        for (let i = (header.length - 1) - 11; i < header.length; i++) {
+                            a.push(i);
+                            dates.push(header[i]);
+                            headers.push(header[i]);
+                        }
+                        break;
+                }
 
-        else if(viewByOption.includes("monthly")){
-            var lastMonthIndex = header[header.length - 1];
-            for (let i = (header.length - 1) - 11 ; i<header.length;i++){
-                a.push(i);
-                dates.push(header[i]);
-                headers.push(header[i])  
-            }
+                switches(selectedOption,rows,p);
+                break;
+            case "monthlyStan":
+                var selectedYear = document.getElementById("years").value;
+                yearDropdown.style.display = viewByOption.includes("monthly") ? "block" : "none";
+                switch (selectedYear) {
+                    case "2017":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2018":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2019":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2020":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2021":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2022":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    case "2023":
+                        monthlyCases(selectedYear,header,a,dates,headers)
+                        break;
+                    default:
+                        var lastMonthIndex = header[header.length - 1];
+                        for (let i = (header.length - 1) - 11; i < header.length; i++) {
+                            a.push(i);
+                            dates.push(header[i]);
+                            headers.push(header[i]);
+                        }
+                        break;
+                }
 
-            switches(selectedOption,rows,p);
-            // var selectedYear = document.getElementById("year").value;           
+                switches(selectedOption,rows,p);
+                break;
+            default: 
+                var lastMonthIndex = header[header.length - 1];
+                var lastMonthValues = lastMonthIndex.split('-')[0];
+        
+                for (let i = 0; i<header.length;i++){
+                    if(header[i].split('-')[0] == lastMonthValues){
+                        a.push(i);
+                        dates.push(header[i]);
+                        headers.push(header[i])
+                    }
+                }
+                switches(selectedOption,rows,p);
+                break;
         }
         // console.log('header',header)
         console.log('headers',headers)
@@ -957,13 +998,11 @@
         }
 
         for (var j = 0; j < p.length; j++) {
-            // var selectedRow = selectedRows[j];
             var product = rows[p[j]].split(',')[0].trim();
             var newRow = newTable.insertRow(-1);
             newRow.classList.add("newRowClass");
 
             // Retrieve all data for the selected item from the CSV file
-            // var lines = csvData.split("\n");
             for (var m = 0; m < lines.length; m++) {
                 var cells = lines[m].split(",");
                 if (cells.length >= 2 && cells[0] === product) { 
