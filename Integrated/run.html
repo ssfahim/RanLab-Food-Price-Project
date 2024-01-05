@@ -278,33 +278,36 @@
     <!-- Hovering window for the menu -->
 <div id="menuWindow">
     <span onclick="closeMenu()" class="closeButton">×</span>
+    <!-- Special Occasion Menu Box -->
+    <div class="menuBox" onclick="openMenu('BakingCake')">
+        <h2>Baking a Cake</h2>
+        <ul>
+            <li>Wheat flour</li>
+            <li>White suger</li>
+            <li>Vegetable oil</li>
+            <li>Milk</li>
+            <li>Butter</li>
+            <li>Cream</li>
+        </ul>
+    </div>
+
+    <div class="menuBox" onclick="openMenu('BakingPie')">
+        <h2>Baking Apple Pie</h2>
+        <ul>
+            <li>Wheat flour</li>
+            <li>White suger</li>
+            <li>Apples</li>
+            <li>Lemons</li>
+            <li>Butter</li>
+        </ul>
+    </div>
+
     <div class="menuBox" onclick="openMenu('ChristmasMenu')">
         <h2>Christmas Menu</h2>
         <ul>
-            <li>Appetizer: Roasted Chestnuts</li>
-            <li>Main Course: Honey Glazed Ham</li>
-            <li>Dessert: Christmas Pudding</li>
-        </ul>
-    </div>
-
-    <!-- Special Occasion Menu Box -->
-    <div class="menuBox" onclick="openMenu('SpecialOccasionMenu')">
-        <h2>Special Occasion Menu</h2>
-        <ul>
-            <li>Appetizer: Shrimp Cocktail</li>
-            <li>Main Course: Filet Mignon</li>
-            <li>Side Dish: Garlic Parmesan Asparagus</li>
-            <li>Dessert: Chocolate Fondue</li>
-        </ul>
-    </div>
-
-    <div class="menuBox" onclick="openMenu()">
-        <h2>Special Occasion Menu</h2>
-        <ul>
-            <li>Appetizer: Shrimp Cocktail</li>
-            <li>Main Course: Filet Mignon</li>
-            <li>Side Dish: Garlic Parmesan Asparagus</li>
-            <li>Dessert: Chocolate Fondue</li>
+            <li>Roasted Chestnuts</li>
+            <li>Honey Glazed Ham</li>
+            <li>Pudding</li>
         </ul>
     </div>
 </div>
@@ -673,8 +676,18 @@
                 `;
                 populateMenu(menuContent, lst);
                 break;
-            case "SpecialOccasionMenu":
-                populateMenu(menuContent, "Shrimp Cocktail", "Filet Mignon", "Garlic Parmesan Asparagus", "Chocolate Fondue");
+            case "BakingCake":
+            var lst = `
+                Wheat flour,White sugar,Vegetable oil,Milk,Butter,Cream
+                `;
+                populateMenu(menuContent, lst);
+                break;
+
+            case "BakingPie":
+                var lst = `
+                Apples,Wheat flour,White sugar,Lemons,Butter
+                `;
+                populateMenu(menuContent, lst);
                 break;
             // Add more cases for additional menus if needed
         }
