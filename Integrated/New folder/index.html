@@ -25,6 +25,7 @@
 <div>
     <p>In order to look for some specific products from the food table and see their yearly & monthly prices please click <b>populate table</b>. It has yearly and monthly standard(price/kg) and store prices.</p>
     <button onclick="generateTable()">Populate table</button>
+    
     <div id="content" style="display: none;">
         <div class="scrollable">
             <table id="csvTable">
@@ -64,52 +65,58 @@
         <button onclick="updateAndVisualize()">Update & Visualize</button>
         <button onclick="selectAll()">Select All</button>
         <button onclick="deselectAll()">Deselect All</button>
+        <div id="selectedTable"></div>
+        <div id="chart"></div>
     </div>
 </div>
 
-<div>
-    <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p>
+<!-- <div>
+    <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p> -->
     <!-- <button onclick="glanceButton()">At a Glance</button> -->
-    <div id="glance">
-    <!-- <div id="glance" style="display: none;"> -->
-        <div>
-            <label for="atAGlance">At a Glance:</label>
-            <select id="atAGlance" onchange="updateAtAGlance()">
-                <option value="none">Select an option</option>
-                <option value="Vegetables">Vegetables</option>
-                <option value="Meat">Meat</option>
-                <option value="Fruits">Fruits</option>
-                <option value="Frozen">Frozen Foods</option>
-                <option value="Dairy">Dairy</option>
-                <option value="Canned">Canned</option>
-            </select>
-        </div>
-        
-        <div id="priceView" style="display: none;">
-            <label for="view">View by:</label>
-            <select id="view" onchange="updateAtAGlance()">
-                <option value="yearly">Yearly Store Price</option>
-                <option value="yearlyStan">Yearly Standard Price</option>
-                <option value="monthly">Monthly Store Price (Past 12 months)</option>
-                <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
-            </select>
-        </div>
-        
-        <div id="yearDrop" style="display: none;">
-            <label for="years">Select Year:</label>
-            <select id="years" onchange="updateAtAGlance()">
-                <option value="none">Select an option</option>
-                <option value="2017">2017</option>
-                <option value="2018">2018</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-            </select>
-        </div>
+<div id="glance">
+    <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p>
+
+<!-- <div id="glance" style="display: none;"> -->
+    <div>
+        <label for="atAGlance">At a Glance:</label>
+        <select id="atAGlance" onchange="updateAtAGlance()">
+            <option value="none">Select an option</option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Meat">Meat</option>
+            <option value="Fruits">Fruits</option>
+            <option value="Frozen">Frozen Foods</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Canned">Canned</option>
+        </select>
     </div>
+    
+    <div id="priceView" style="display: none;">
+        <label for="view">View by:</label>
+        <select id="view" onchange="updateAtAGlance()">
+            <option value="yearly">Yearly Store Price</option>
+            <option value="yearlyStan">Yearly Standard Price</option>
+            <option value="monthly">Monthly Store Price (Past 12 months)</option>
+            <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
+        </select>
+    </div>
+    
+    <div id="yearDrop" style="display: none;">
+        <label for="years">Select Year:</label>
+        <select id="years" onchange="updateAtAGlance()">
+            <option value="none">Select an option</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+        </select>
+    </div>
+    <div id="selectedTable"></div>
+    <div id="chart"></div>
 </div>
+
 
 <!-- <div id="menu-container">
     <div class="menu">
@@ -177,6 +184,7 @@
 
 <div id="selectedTable"></div>
 <div id="chart"></div>
+
 <script src="index.js"></script>
 </body>
 </html>
