@@ -14,92 +14,100 @@
         <p>Source: Statistics Canada. (2023, November 1). <i>Table 18-10-0245-01 Monthly average retail prices for selected products.</i></p>
     </header>
 
-    <button onclick="generateTable()">Populate table</button>
-    <button onclick="glanceButton()">At a Glance</button>
-    <button id="menuButton" onclick="openMenu()">Menu</button>
+    <!-- <button onclick="generateTable()">Populate table</button> -->
+    <!-- <button onclick="glanceButton()">At a Glance</button> -->
+    <!-- <button id="menuButton" onclick="openMenu()">Menu</button> -->
     <button onclick="resetPage()">Reset</button>
 
     
 
 
-
-<div id="content" style="display: none;">
-    <div class="scrollable">
-        <table id="csvTable">
-            <!-- Table header -->
-            <thead>
-                <tr>
-                    <!-- <th></th>  -->
-                </tr>
-            </thead>
-            <!-- Table content will be dynamically generated here -->
-        </table>
+<div>
+    <p>In order to look for some specific products from the food table and see their yearly & monthly prices please click <b>populate table</b>. It has yearly and monthly standard(price/kg) and store prices.</p>
+    <button onclick="generateTable()">Populate table</button>
+    <div id="content" style="display: none;">
+        <div class="scrollable">
+            <table id="csvTable">
+                <!-- Table header -->
+                <thead>
+                    <tr>
+                        <!-- <th></th>  -->
+                    </tr>
+                </thead>
+                <!-- Table content will be dynamically generated here -->
+            </table>
+        </div>
+        
+        <div>
+            <label for="viewBy">View by:</label>
+            <select id="viewBy" onchange="updateAndVisualize()">
+                <option value="yearly">Yearly Store Price</option>
+                <option value="yearlyStan">Yearly Standard Price</option>
+                <option value="monthly">Monthly Store Price (Past 12 months)</option>
+                <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
+            </select>
+        </div>
+        
+        <div id="yearDropdown" style="display: none;">
+            <label for="year">Select Year:</label>
+            <select id="year" onchange="updateAndVisualize()">
+                <option value="none">Select an option</option>
+                <option value="2017">2017</option>
+                <option value="2018">2018</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+            </select>
+        </div>
+        <button onclick="updateAndVisualize()">Update & Visualize</button>
+        <button onclick="selectAll()">Select All</button>
+        <button onclick="deselectAll()">Deselect All</button>
     </div>
-    
-    <div>
-        <label for="viewBy">View by:</label>
-        <select id="viewBy" onchange="updateAndVisualize()">
-            <option value="yearly">Yearly Store Price</option>
-            <option value="yearlyStan">Yearly Standard Price</option>
-            <option value="monthly">Monthly Store Price (Past 12 months)</option>
-            <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
-        </select>
-    </div>
-    
-    <div id="yearDropdown" style="display: none;">
-        <label for="year">Select Year:</label>
-        <select id="year" onchange="updateAndVisualize()">
-            <option value="none">Select an option</option>
-            <option value="2017">2017</option>
-            <option value="2018">2018</option>
-            <option value="2019">2019</option>
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-        </select>
-    </div>
-    <button onclick="updateAndVisualize()">Update & Visualize</button>
-    <button onclick="selectAll()">Select All</button>
-    <button onclick="deselectAll()">Deselect All</button>
-
 </div>
-<div id="glance" style="display: none;">
-    <div>
-        <label for="atAGlance">At a Glance:</label>
-        <select id="atAGlance" onchange="updateAtAGlance()">
-            <option value="none">Select an option</option>
-            <option value="Vegetables">Vegetables</option>
-            <option value="Meat">Meat</option>
-            <option value="Fruits">Fruits</option>
-            <option value="Frozen">Frozen Foods</option>
-            <option value="Dairy">Dairy</option>
-            <option value="Canned">Canned</option>
-        </select>
-    </div>
-    
-    <div id="priceView" style="display: none;">
-        <label for="view">View by:</label>
-        <select id="view" onchange="updateAtAGlance()">
-            <option value="yearly">Yearly Store Price</option>
-            <option value="yearlyStan">Yearly Standard Price</option>
-            <option value="monthly">Monthly Store Price (Past 12 months)</option>
-            <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
-        </select>
-    </div>
-    
-    <div id="yearDrop" style="display: none;">
-        <label for="years">Select Year:</label>
-        <select id="years" onchange="updateAtAGlance()">
-            <option value="none">Select an option</option>
-            <option value="2017">2017</option>
-            <option value="2018">2018</option>
-            <option value="2019">2019</option>
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
-            <option value="2023">2023</option>
-        </select>
+
+<div>
+    <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p>
+    <!-- <button onclick="glanceButton()">At a Glance</button> -->
+    <div id="glance">
+    <!-- <div id="glance" style="display: none;"> -->
+        <div>
+            <label for="atAGlance">At a Glance:</label>
+            <select id="atAGlance" onchange="updateAtAGlance()">
+                <option value="none">Select an option</option>
+                <option value="Vegetables">Vegetables</option>
+                <option value="Meat">Meat</option>
+                <option value="Fruits">Fruits</option>
+                <option value="Frozen">Frozen Foods</option>
+                <option value="Dairy">Dairy</option>
+                <option value="Canned">Canned</option>
+            </select>
+        </div>
+        
+        <div id="priceView" style="display: none;">
+            <label for="view">View by:</label>
+            <select id="view" onchange="updateAtAGlance()">
+                <option value="yearly">Yearly Store Price</option>
+                <option value="yearlyStan">Yearly Standard Price</option>
+                <option value="monthly">Monthly Store Price (Past 12 months)</option>
+                <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
+            </select>
+        </div>
+        
+        <div id="yearDrop" style="display: none;">
+            <label for="years">Select Year:</label>
+            <select id="years" onchange="updateAtAGlance()">
+                <option value="none">Select an option</option>
+                <option value="2017">2017</option>
+                <option value="2018">2018</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+            </select>
+        </div>
     </div>
 </div>
 
@@ -125,45 +133,47 @@
     </div>
 </div> -->
 
-
-
-
+<div>
+    <p>The <b>Menu</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p>
+    <button id="menuButton" onclick="openMenu()">Menu</button>
     <!-- Hovering window for the menu -->
-<div id="menuWindow">
-    <span onclick="closeMenu()" class="closeButton">×</span>
-    <!-- Special Occasion Menu Box -->
-    <div class="menuBox" onclick="openMenu('BakingCake')">
-        <h2>Baking a Cake</h2>
-        <ul>
-            <li>Wheat flour</li>
-            <li>White suger</li>
-            <li>Vegetable oil</li>
-            <li>Milk</li>
-            <li>Butter</li>
-            <li>Cream</li>
-        </ul>
-    </div>
+    <div id="menuWindow">
+        <span onclick="closeMenu()" class="closeButton">×</span>
+        <!-- Special Occasion Menu Box -->
+        <div class="menuBox" onclick="openMenu('BakingCake')">
+            <h2>Baking a Cake</h2>
+            <ul>
+                <li>Wheat flour</li>
+                <li>White suger</li>
+                <li>Vegetable oil</li>
+                <li>Milk</li>
+                <li>Butter</li>
+                <li>Cream</li>
+            </ul>
+        </div>
 
-    <div class="menuBox" onclick="openMenu('BakingPie')">
-        <h2>Baking Apple Pie</h2>
-        <ul>
-            <li>Wheat flour</li>
-            <li>White suger</li>
-            <li>Apples</li>
-            <li>Lemons</li>
-            <li>Butter</li>
-        </ul>
-    </div>
+        <div class="menuBox" onclick="openMenu('BakingPie')">
+            <h2>Baking Apple Pie</h2>
+            <ul>
+                <li>Wheat flour</li>
+                <li>White suger</li>
+                <li>Apples</li>
+                <li>Lemons</li>
+                <li>Butter</li>
+            </ul>
+        </div>
 
-    <div class="menuBox" onclick="openMenu('ChristmasMenu')">
-        <h2>Christmas Menu</h2>
-        <ul>
-            <li>Roasted Chestnuts</li>
-            <li>Honey Glazed Ham</li>
-            <li>Pudding</li>
-        </ul>
+        <div class="menuBox" onclick="openMenu('ChristmasMenu')">
+            <h2>Christmas Menu</h2>
+            <ul>
+                <li>Roasted Chestnuts</li>
+                <li>Honey Glazed Ham</li>
+                <li>Pudding</li>
+            </ul>
+        </div>
     </div>
 </div>
+
 
 <div id="selectedTable"></div>
 <div id="chart"></div>
