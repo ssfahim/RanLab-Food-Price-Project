@@ -357,8 +357,8 @@ function resetPage() {
 function openMenu(menuType) {
     var menuWindow = document.getElementById("menuWindow");
     menuWindow.style.display = "block";
-    document.getElementById('glance').style.display = "none";
-    document.getElementById('content').style.display = "none";
+    // document.getElementById('glance').style.display = "none";
+    // document.getElementById('content').style.display = "none";
 
     // Get the content container
     var menuContent = document.getElementById("selectedTable");
