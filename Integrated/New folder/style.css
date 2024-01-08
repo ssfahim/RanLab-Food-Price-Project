@@ -1,0 +1,158 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 25px;
+}
+p {
+    font-size: 18px; /* Adjust the size as needed */
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 2px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}
+.scrollable {
+    max-height: 250px;
+    overflow-y: scroll;
+    /* margin-left: 5px; */
+    margin-right: calc(80% );
+    width: 30%;
+}
+.scrollable::-webkit-scrollbar {
+    width: 15px; /* Set the width of the scrollbar */
+}
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: #888; /* Set the color of the thumb */
+    border-radius: 5px; /* Set the border-radius of the thumb */
+}
+.scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Set the color of the thumb on hover */
+}
+.scrollable::-webkit-scrollbar-track {
+    background-color: #f2f2f2; /* Set the color of the track */
+}
+.scrollable::-webkit-scrollbar-track:hover {
+    background-color: #ddd; /* Set the color of the track on hover */
+}
+#selectedTable {
+    margin-top: 20px;
+}
+.selectedTable td {
+    position: relative;
+}
+.heatmap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+input[type="checkbox"] {
+    width: 24px; /* Adjust the width as needed */
+    height: 24px; /* Adjust the height as needed */
+    margin: 0; /* Remove any default margin */
+}
+
+select {
+    font-size: 16px; /* Adjust the size as needed */
+    padding: 8px;    /* Adjust the padding as needed */
+    margin-left: 2px;
+}
+/* Increase the size of the buttons */
+button {
+    font-size: 16px; /* Adjust the size as needed */
+    padding: 10px;   /* Adjust the padding as needed */
+}
+
+#atAGlance {
+    margin-top: 15px;
+    margin-left: 2px;
+}
+/* #menu-container {
+    margin-bottom: 20px; 
+    width: 100%;
+    height: 100vh;
+    background: #888;
+    position: relative;
+    overflow: hidden;
+}
+.menu {
+    margin-bottom: 20px; 
+    width: 100%;
+    height: 100vh;
+    background: #888;
+    position: relative;
+    overflow: hidden;
+} */
+#content {
+    margin-right: 270px; /* Adjust margin to accommodate the menu width */
+    padding: 20px;
+}
+
+#glance {
+    margin-right: 270px; /* Adjust margin to accommodate the menu width */
+    padding: 20px;
+}
+
+.newRowClass {
+    animation: fadeInFromBottom 0.8s ease-in-out;
+}
+
+#menuWindow {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid #302e2e;
+    box-shadow: 0 25px 15px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    margin: 40px;
+    height: 350px;
+    width: 30%;
+    overflow-y: auto;
+}
+
+/* Style for the close button */
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.menuBox {
+    border: 2px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 92%;
+    /* height: 100px; */
+    overflow-y: auto;
+    cursor: pointer;
+}
+.menuBox:active {
+    background-color: #e6e6e6; /* Change background color on click */
+    transition: background-color 0.3s; /* Add a smooth transition effect */
+}
+
+@keyframes fadeInFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
