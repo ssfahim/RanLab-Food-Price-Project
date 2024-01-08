@@ -509,7 +509,7 @@ function createGPlot(csvData, dates, a, p) {
     };
 
     // Plot the data
-    Plotly.newPlot('chart', plotData, layout);
+    Plotly.newPlot('charts', plotData, layout);
 }
 
 function getProductData(product, csvData,a) {
@@ -527,7 +527,7 @@ function getProductData(product, csvData,a) {
 }
 
 function updateAtAGlance() {
-    var selectedTable = document.getElementById("selectedTable");
+    var selectedTable = document.getElementById("selectedTables");
     selectedTable.innerHTML = "";
     
     var selectedOption = document.getElementById("atAGlance").value;
@@ -567,7 +567,7 @@ function updateAtAGlance() {
     }
 
     var newTable = document.createElement("table");
-    newTable.classList.add("selectedTable");
+    newTable.classList.add("selectedTables");
 
     var headerRow = newTable.insertRow(-1);
 
@@ -702,7 +702,7 @@ function updateAtAGlance() {
 
     // Create a new table
     var newTable = document.createElement("table");
-    newTable.classList.add("selectedTable");
+    newTable.classList.add("selectedTables");
 
     var headerRow = newTable.insertRow(-1);
 
