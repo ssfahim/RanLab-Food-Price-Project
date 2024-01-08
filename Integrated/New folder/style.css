@@ -99,7 +99,7 @@ button {
 
 #glance {
     margin-right: 270px; /* Adjust margin to accommodate the menu width */
-    padding: 20px;
+    padding: -1px;
 }
 
 .newRowClass {
