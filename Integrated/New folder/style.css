@@ -40,12 +40,26 @@ th {
 .scrollable::-webkit-scrollbar-track:hover {
     background-color: #ddd; /* Set the color of the track on hover */
 }
-#selectedTable {
+/* #selectedTable {
     margin-top: 20px;
 }
 .selectedTable td {
     position: relative;
 }
+
+#selectedTables {
+    margin-top: 20px;
+}
+.selectedTables td {
+    position: relative;
+}
+
+#selectedTablesd {
+    margin-top: 20px;
+}
+.selectedTablesd td {
+    position: relative;
+} */
 .heatmap {
     position: absolute;
     top: 0;
