@@ -361,7 +361,7 @@ function openMenu(menuType) {
     // document.getElementById('content').style.display = "none";
 
     // Get the content container
-    var menuContent = document.getElementById("selectedTable");
+    var menuContent = document.getElementById("selectedTablesd");
     menuContent.innerHTML = ""; // Clear previous content
 
     // Populate content based on the selected menu
@@ -394,7 +394,7 @@ function populateMenu(container,lst) {
     var lines = csvData.split("\n");
 
     var newTable = document.createElement("table");
-    newTable.classList.add("selectedTable");
+    newTable.classList.add("selectedTablesd");
 
     var headerRow = newTable.insertRow(-1);
 
@@ -451,9 +451,10 @@ function populateMenu(container,lst) {
         // Add a heat map to each row
         addHeatMapToRow(newRow);
     }
+    var plot = 'chartsd';
 
     container.appendChild(newTable);
-    createGPlot(csvData, dates,a,p);
+    createGPlot(plot,csvData, dates,a,p);
 }
 
 function closeMenu() {
@@ -466,7 +467,7 @@ function generateTable(){
     document.getElementById('content').style.display = "block";
 }
 
-function createGPlot(csvData, dates, a, p) {
+function createGPlot(plot, csvData, dates, a, p) {
     var plotData = [];
     var rows = csvData.trim().split('\n');
     // Add traces for selected products
@@ -509,7 +510,7 @@ function createGPlot(csvData, dates, a, p) {
     };
 
     // Plot the data
-    Plotly.newPlot('charts', plotData, layout);
+    Plotly.newPlot(plot, plotData, layout);
 }
 
 function getProductData(product, csvData,a) {
@@ -736,19 +737,20 @@ function updateAtAGlance() {
         // Add a heat map to each row
         addHeatMapToRow(newRow);
     }
+    var plot = 'charts';
     selectedTable.appendChild(newTable);
 
     if (viewByOption ==="yearly") {
-        createGPlot(csvData, dates,a,p);
+        createGPlot(plot,csvData, dates,a,p);
     }
     else if (viewByOption ==="monthly") {
-        createGPlot(csvData, dates,a,p);
+        createGPlot(plot,csvData, dates,a,p);
     }
     else if(viewByOption === "yearlyStan") {
-        createGPlot(csvData1, dates,a,p);
+        createGPlot(plot,csvData1, dates,a,p);
     }
     else if(viewByOption === "monthlyStan") {
-        createGPlot(csvData1, dates,a,p);
+        createGPlot(plot,csvData1, dates,a,p);
     }
 
 }
