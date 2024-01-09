@@ -39,16 +39,28 @@ function populateTable(csv) {
 
 function generateTable(){
     populateTable(csvData);
-    document.getElementById('content').style.display = "block";
+    // var contentElement = document.getElementById('content');
+    // console.log(contentElement)
+    // contentElement.style.display = (contentElement.style.display === "block") ? "none" : "block";
+
+    document.getElementById('content').style.display = "none";
+    document.getElementById('btn').style.display = "block";
     document.getElementById('glance').style.display = "none";
     document.getElementById("menuWindow").style.display = "none";
 }
+// function hideTable(){
+//     // document.getElementById('content').style.display = "none";
+//     document.getElementById('btn').style.display = "block";
+
+// }
 
 function glanceButton(){
     document.getElementById('glance').style.display = "block";
     document.getElementById('content').style.display = "none";
     document.getElementById("menuWindow").style.display = "none";
 }
+
+
 
 function monthlyCases(selectedYear,header,a,dates,headers){
     for (let i = 0; i < header.length; i++) {
