@@ -9,7 +9,7 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <header>
+    <header id = 'headers'>
         <h1>Average Retail Food Prices (2017 - 2023) </h1>
         <p>Source: Statistics Canada. (2023, November 1). <i>Table 18-10-0245-01 Monthly average retail prices for selected products.</i></p>
     </header>
@@ -19,14 +19,10 @@
     <!-- <button id="menuButton" onclick="openMenu()">Menu</button> -->
     <!-- <button onclick="resetPage()">Refresh</button> -->
 
-    
-
-
 <div>
     <p>In order to look for some specific products from the food table and see their yearly & monthly prices please click <b>populate table</b>. It has yearly and monthly standard(price/kg) and store prices.</p>
     <button onclick="generateTable()">Populate table</button>
     <button onclick="resetPage()">Refresh</button>
-
 
     <!-- <div id = 'btn' style="display: none;">
         <button onclick="hideTable()">Hide table</button>
@@ -194,7 +190,6 @@
     <div id="selectedTablesd"></div>
     <div id="chartsd"></div>
 </div>
-
 
 <!-- <div id="selectedTable"></div>
 <div id="chart"></div> -->
