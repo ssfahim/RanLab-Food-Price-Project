@@ -429,7 +429,7 @@ function populateMenu(container,lst, measurement,category) {
     var rows = csvData.trim().split('\n');
     var header= rows[0].split(',');
     var headers = [];
-    headers.push(rows[0].split(',')[0],rows[0].split(',')[1]);
+    headers.push('<strong>' + rows[0].split(',')[0] + '</strong>', '<strong>' + rows[0].split(',')[1] + '</strong>');
     var totals = [];
     totals.push("","Total Price: ")
     var dates = []; // what are the dates for the headers row
@@ -445,7 +445,7 @@ function populateMenu(container,lst, measurement,category) {
         if(header[i].split('-')[0] == lastMonthValues){
             a.push(i);
             dates.push(header[i]);
-            headers.push(header[i])
+            headers.push('<strong>' + header[i]+ '</strong>')
         }
     }
     var r = lst.trim().split(',');
@@ -579,7 +579,7 @@ function populateMenu(container,lst, measurement,category) {
             }
             
             console.log(totalPrice);
-            var tot = ["","Total Price: "];
+            var tot = ["","<b>Total Price:</b> "];
             // Loop through each inner list
             for (var i = 0; i < totalPrice.length; i++) {
                 var innerList = totalPrice[i];
@@ -638,7 +638,7 @@ function populateMenu(container,lst, measurement,category) {
                 }
             }
             // console.log(totalPrice);
-            var tot = ["","Total Price: "];
+            var tot = ["","<b>Total Price:</b> "];
         // Loop through each inner list
             for (var i = 0; i < totalPrice.length; i++) {
                 var innerList = totalPrice[i];
