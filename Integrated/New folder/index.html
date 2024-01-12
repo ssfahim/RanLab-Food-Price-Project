@@ -10,8 +10,8 @@
 </head>
 <body>
     <header id = 'headers'>
-        <h1>Average Retail Food Prices (2017 - 2023) </h1>
-        <p>Source: Statistics Canada. (2023, November 1). <i>Table 18-10-0245-01 Monthly average retail prices for selected products.</i></p>
+        <h1>Average Retail Food Prices in NL (2017 - 2023) </h1>
+        <p>Source: Statistics Canada. (2023, December 1). <i>Table 18-10-0245-01 Monthly average retail prices for selected products.</i></p>
     </header>
 
     <!-- <button onclick="generateTable()">Populate table</button> -->
@@ -19,8 +19,9 @@
     <!-- <button id="menuButton" onclick="openMenu()">Menu</button> -->
     <!-- <button onclick="resetPage()">Refresh</button> -->
 
-<div>
-    <p>In order to look for some specific products from the food table and see their yearly & monthly prices please click <b>populate table</b>. It has yearly and monthly standard(price/kg) and store prices.</p>
+<div id = 'tableWork'>
+    <p>In order to look for some specific products from the food table and see their yearly & monthly prices please click 
+        <b>populate table</b>. It has yearly and monthly standard(price/kg) and store prices.</p>
     <button onclick="generateTable()">Populate table</button>
     <button onclick="resetPage()">Refresh</button>
 
@@ -72,8 +73,9 @@
     </div>
 </div>
 
-<div>
-    <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p>
+<div id = 'tableWork1'>
+    <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. 
+        It has yearly and monthly standard(price/kg) and store prices.</p>
     <!-- <button onclick="glanceButton()">At a Glance</button> -->
     <div id="glance">
     <!-- <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p> -->
@@ -145,46 +147,63 @@
     </div>
 </div> -->
 
-<div>
-    <p>The <b>Menu</b> section shows how much prices have changed for certain grocery products over the years. It has yearly and monthly standard(price/kg) and store prices.</p>
-    <button id="menuButton" onclick="openMenu()">Menu</button>
+<div id = 'tableWork2'>
+    <p>This <b>Recipe</b> section shows how much it would cost to make a certain dish in today's market compared to other 
+        times.
+        You can choose any recipe and see the measurements for a standard portion and the cost of each ingredients over 
+        the years.
+    </p><p> From <b>Select an Option</b> dropdown you can choose how much the standard portion will cost by selecting 
+        <b>Price According to Menu</b>,
+        Also by selecting <b>Store Price</b> you have the option to check how much it would cost to buy the product from 
+        the store with its actual price and the unit that it is sold on. 
+    </p><p>(<b>Note:</b> A single unit of Lemon is assumed to have 2 tablespoons or 30ml of juice. <i>(Source: Google)</i>
+        <!-- <b>Note:</b> 1 cup of flour is assumed to have 2 tablespoons or 30ml of juice. <i>(Source: Google)</i><br> -->
+        )
+    </p>
+    <!-- <button id="menuButton" onclick="openMenu()">Menu</button> -->
+    <label></label>
+    <select id="category" onchange="openMenu()">
+        <option value="none">Select an option</option>
+        <option value="menuPrice">Price According to Menu</option>
+        <option value="storePrice">Store Price</option>
+    </select>
     <button onclick="resetPage()">Refresh</button>
-
     <!-- Hovering window for the menu -->
     <div id="menuWindow">
-        <span onclick="closeMenu()" class="closeButton">×</span>
+        <span onclick="closeMenu()" class="closeButton">X</span>
         <!-- Special Occasion Menu Box -->
         <div class="menuBox" onclick="openMenu('BakingCake')">
             <h2>Baking a Cake</h2>
             <ul>
-                <li>Wheat flour</li>
-                <li>White suger</li>
-                <li>Vegetable oil</li>
-                <li>Milk</li>
-                <li>Butter</li>
-                <li>Cream</li>
+                <li>Wheat flour 3 cups(360 grams)</li>
+                <li>White suger 1 1/2 cup(180 grams)</li>
+                <li>Vegetable oil 1/2 cup(118.5 ml)</li>
+                <li>Milk 1 cup(120 grams)</li>
+                <li>Butter 1/2 cup(118.5 ml)</li>
+                <!-- <li>Cream</li> -->
             </ul>
         </div>
 
         <div class="menuBox" onclick="openMenu('BakingPie')">
             <h2>Baking Apple Pie</h2>
-            <ul>
-                <li>Wheat flour</li>
-                <li>White suger</li>
-                <li>Apples</li>
-                <li>Lemons</li>
-                <li>Butter</li>
+            <ul>               
+                <li>Apples 6 unit(410 grams)</li>
+                <li>Wheat flour 1/4 cup(60 grams)</li>
+                <li>White suger 1 1/4 cup(150 grams)</li>
+                <li>Lemons 1 tablespoon(14.78 ml)</li>
+                <li>Butter 1/2 cup(118.5 ml)</li>
+            </ul>
             </ul>
         </div>
 
-        <div class="menuBox" onclick="openMenu('ChristmasMenu')">
+        <!-- <div class="menuBox" onclick="openMenu('ChristmasMenu')">
             <h2>Christmas Menu</h2>
             <ul>
                 <li>Roasted Chestnuts</li>
                 <li>Honey Glazed Ham</li>
                 <li>Pudding</li>
             </ul>
-        </div>
+        </div> -->
         
     </div>
     <div id="selectedTablesd"></div>
