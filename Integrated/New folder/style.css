@@ -1,25 +1,43 @@
 body {
     font-family: Arial, sans-serif;
     margin-left: 25px;
-    max-width: 310mm; /* A4 paper width */
+    max-width: 310mm; 
     margin: 0 auto;
-    /* border: 1px solid rgb(204, 204, 204); */
+    border: 3px solid rgb(204, 204, 204);
     border-bottom: #e6e6e6;
+    border-top: #e6e6e6;
 }
 p {
-    font-size: 18px; /* Adjust the size as needed */
+    font-size: 18px; 
 }
 table {
     border-collapse: collapse;
     width: 100%;
 }
+
+#tableWork {
+    max-width: calc(100% - 20px); 
+    margin: 0 10px;
+}
+
+#tableWork1 {
+    max-width: calc(100% - 20px); 
+    margin: 0 10px;
+}
+
+#tableWork2 {
+    max-width: calc(100% - 20px);
+    margin: 0 10px;
+}
+
 #headers {
-    background-color: #333; /* Background color */
-    color: white; /* Text color */
-    padding: 20px; /* Padding around content */
+    background-color: #333; 
+    color: white; 
+    padding: 20px;
     text-align: center;
-    border: 5px solid #555; /* Border on all sides */
-    background-size: 210mm 297mm; /* A4 paper size */
+    border: 5px solid #555; 
+    background-size: 210mm 297mm; 
+    max-width: 400mm;
     margin: 0 auto;
 }
 
@@ -140,18 +158,18 @@ button {
 
 #menuWindow {
     display: none;
-    position: fixed;
-    top: 20%;
-    left: 55%;
-    transform: translate(-50%, -50%);
+    position:absolute;
+    /* top: 55%;
+    left: 55%; */
+    /* transform: translate(-50%, -50%); */
     padding: 20px;
     background-color: #fff;
     border: 2px solid #302e2e;
     box-shadow: 0 25px 15px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    /* z-index: 1; */
     margin: 40px;
     height: 350px;
-    width: 30%;
+    width: 40%;
     overflow-y: auto;
 }
 
@@ -175,7 +193,7 @@ button {
 }
 .menuBox:active {
     background-color: #e6e6e6; /* Change background color on click */
-    transition: background-color 0.3s; /* Add a smooth transition effect */
+    transition: background-color 0.5s; /* Add a smooth transition effect */
 }
 
 @keyframes fadeInFromBottom {
