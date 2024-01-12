@@ -859,20 +859,27 @@ function openMenu(menuType) {
 // Function to populate menu content
 function populateMenu(container,lst, measurement,category) {
     // var category = document.getElementById('category').value;
+    var menuContent = document.getElementById("selectedTablesd");
+    menuContent.innerHTML = "";
     var lines = csvData.split("\n");
 
     var newTable = document.createElement("table");
     newTable.classList.add("selectedTablesd");
 
     var headerRow = newTable.insertRow(-1);
+    var tailerRow = newTable.insertRow(-1);
 
     var rows = csvData.trim().split('\n');
     var header= rows[0].split(',');
     var headers = [];
-    headers.push(rows[0].split(',')[0],rows[0].split(',')[1]);
+    headers.push('<strong>' + rows[0].split(',')[0] + '</strong>', '<strong>' + rows[0].split(',')[1] + '</strong>');
+    var totals = [];
+    totals.push("","Total Price: ")
     var dates = []; // what are the dates for the headers row
     var a = []; // in which columns the dates are located
     var p = []; // in which row the product is located
+
+    
 
     var lastMonthIndex = header[header.length - 1];
     var lastMonthValues = lastMonthIndex.split('-')[0];
@@ -881,58 +888,23 @@ function populateMenu(container,lst, measurement,category) {
         if(header[i].split('-')[0] == lastMonthValues){
             a.push(i);
             dates.push(header[i]);
-            headers.push(header[i])
+            headers.push('<strong>' + header[i]+ '</strong>')
         }
     }
     var r = lst.trim().split(',');
-    // var lst1 = [];
-    // var lst2 = [];
-    // var measure = measurement.trim().split(',');
-    // for(let i = 0; i<measure.length;i++){
-    //     var measures = measure[i].trim().split('(');
-    //     var measuress = measures[1].trim().split(' ');
-    //     lst1.push(parseInt(measuress[0],10));
-    // }
-    // // var measurement = `
-    // // 3 cups(360 grams),1 1/2 cup(180 grams),1/2 cup(60ml),1 cup(120 grams),1/2 cup(60ml)
-    // // `;
-    // console.log(lst1);
     cases(rows, r, p)
-    console.log('p-->',p)
-    // for (var z = 0; z<p.length;z++){
-    //     var product = rows[p[z]].split(',')[1].trim();
-    //     lst2.push(product);
-    // }
-    // console.log('lst2-->',lst2);
 
-    // var actualUnit = [];
-    // for(let x = 0; x<lst2.length;x++){
-    //     var pop = lst2[x].split(' ');
-    //     // console.log(parseFloat(pop[0]));
-    //     if (parseFloat(pop[0]) < 6){
-    //         var cal = parseFloat(pop[0]) * 1000;
-    //         console.log('var-->',cal)
-    //         actualUnit.push(cal);
-    //     }
-    //     else{
-    //         console.log('varrrrrrrrrrr-->',parseFloat(pop[0]));
-    //         actualUnit.push(parseFloat(pop[0]));
-    //     }
-    // }
-    // console.log('price-->',actualUnit)
-    // var c = measurement.trim().split(",");
-    // var lst3 = [];
-    // for(let g = 0; g<c.length;g++){
-    //     lst3.push(c[g]);
-    // }
-    // var price = [];
-    // console.log('Measurements----------------------->',lst3)
-    // var lst3Index = 0;
-    // var lst2Index = 0;
+    // console.log('a', a)
+    // console.log('p',p)
+    // console.log('p-->',p)
+    
+
+    // console.log(totalPrice)
     for (var i = 0; i < headers.length; i++) {
         var cell = headerRow.insertCell(-1);
         cell.innerHTML = headers[i];
     }
+
     switch(category){
         case 'menuPrice':
             var lst1 = []; // stores the actual measurements of each item of the recipe in grams
@@ -944,19 +916,19 @@ function populateMenu(container,lst, measurement,category) {
                 var measuress = measures[1].trim().split(' ');
                 lst1.push(parseInt(measuress[0],10));
             }
-            console.log(lst1);
+            // console.log(lst1);
             for (var z = 0; z<p.length;z++){
                 var product = rows[p[z]].split(',')[1].trim();
                 lst2.push(product);
             }
-            console.log('lst2-->',lst2);
+            // console.log('lst2-->',lst2);
         
             for(let x = 0; x<lst2.length;x++){
                 var pop = lst2[x].split(' ');
                 // console.log(parseFloat(pop[0]));
                 if (parseFloat(pop[0]) <= 6){
                     var cal = parseFloat(pop[0]) * 1000;
-                    console.log('var-->',cal)
+                    // console.log('var-->',cal)
                     actualUnit.push(cal);
                 }
                 else if(pop[0] == 'per'){
@@ -970,18 +942,18 @@ function populateMenu(container,lst, measurement,category) {
                     actualUnit.push(cal);
                 }
                 else{
-                    console.log('varrrrrrrrrrr-->',parseFloat(pop[0]));
+                    // console.log('varrrrrrrrrrr-->',parseFloat(pop[0]));
                     actualUnit.push(parseFloat(pop[0]));
                 }
             }
-            console.log('price-->',actualUnit)
+            // console.log('price-->',actualUnit)
             var c = measurement.trim().split(",");
             var lst3 = [];
             for(let g = 0; g<c.length;g++){
                 lst3.push(c[g]);
             }
             var price = [];
-            console.log('Measurements----------------------->',lst3)
+            // console.log('Measurements----------------------->',lst3)
             var lst3Index = 0;
             for (var j = 0; j < p.length; j++) {
                 // var selectedRow = selectedRows[j];
@@ -1006,12 +978,12 @@ function populateMenu(container,lst, measurement,category) {
                             break;
                         }
                         // cell.innerHTML = measurement.trim().split(",")[m];
-                        console.log('n',m)
+                        // console.log('n',m)
                         for (var n = 0; n < a.length; n++) {
                             var cell = newRow.insertCell(-1);
                             // cell.innerHTML = cells[a[n]];
                             var u = parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2));
-                            getPrice(u);
+                            // getPrice(u);
                             for(let b =0; b<lst1.length;b++){
                                 cell.innerHTML = parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2));
                                 price.push(parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2)));
@@ -1027,37 +999,68 @@ function populateMenu(container,lst, measurement,category) {
                             // console.log('aaaaa',cells[a[n]])
                             // prices.push(cells[a[n]]);
                         }
-                        break;  
+                        break; 
+                        
                     }
                 }
+                
                 // Add a heat map to each row
                 addHeatMapToRow(newRow);
             }
-            // console.log(getPrice(parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2))))
+            console.log(price)
+            
+            var totalPrice = [[], [], [], [], [], [], []];
 
-            // console.log(price)
-            var plot = 'chartsd';
-
-            container.appendChild(newTable);
-            createGPlot(plot,csvData, dates,a,p);
+            // Assuming you want to distribute the prices evenly to the inner arrays of totalPrice
+            var rows = 7; // Number of rows
+            var cols = 5; // Number of columns
+            
+            for (var i = 0; i < price.length; i++) {
+                var rowIndex = i % rows;
+                var colIndex = Math.floor(i / rows);
+                totalPrice[rowIndex][colIndex] = price[i];
+            }
+            
+            console.log(totalPrice);
+            var tot = ["","<b>Total Price:</b> "];
+            // Loop through each inner list
+            for (var i = 0; i < totalPrice.length; i++) {
+                var innerList = totalPrice[i];
+                // Initialize a variable to store the total of the current inner list
+                var innerListTotal = 0;
+                // Loop through each element in the inner list and add it to the total
+                for (var j = 0; j < innerList.length; j++) {
+                    innerListTotal += innerList[j];
+                }
+                // Add the total of the current inner list to the totals array
+                tot.push(parseFloat(innerListTotal.toFixed(2)));
+            }
+            // Display the totals
+            console.log(tot);
+            var u = newTable.insertRow(-1);
+            // var tailerRow = newTable.insertRow(-1);
+            for (var h = 0; h < tot.length; h++) {
+                
+                var cell = u.insertCell(-1);
+                cell.innerHTML = tot[h];
+            }
             break;
         case 'storePrice':
             for (var j = 0; j < p.length; j++) {
                 // var selectedRow = selectedRows[j];
-                var product = rows[p[j]].split(',')[0].trim();
-                var newRow = newTable.insertRow(-1);
-        
+                var product = rows[p[j]].split(',')[0].trim(); //name of the product
+                newRow = newTable.insertRow(-1);
                 // Retrieve all data for the selected item from the CSV file
                 // var lines = csvData.split("\n");
                 for (var m = 0; m < lines.length; m++) {
                     var cells = lines[m].split(",");
-                    
+                    var totals = 0;
                     if (cells.length >= 2 && cells[0] === product) { 
                         var cell = newRow.insertCell(-1);
                         cell.innerHTML = cells[0];
                         var cell = newRow.insertCell(-1);
                         cell.innerHTML = cells[1];
-                        console.log('n',m)
+            
                         for (var n = 0; n < a.length; n++) {
                             var cell = newRow.insertCell(-1);
                             cell.innerHTML = cells[a[n]];
@@ -1065,72 +1068,51 @@ function populateMenu(container,lst, measurement,category) {
                         break;
                     }
                 }
-                // Add a heat map to each row
+                                // Add a heat map to each row
                 addHeatMapToRow(newRow);
             }
-            console.log(price)
-            var plot = 'chartsd';
-        
-            container.appendChild(newTable);
-            createGPlot(plot,csvData, dates,a,p);
+            var totalPrice = [[],[],[],[],[],[],[]];
+    
+            for(let q = 0; q<p.length;q++){
+                for(let t=0; t<a.length;t++){
+                    var productRowColumn = rows[p[q]].split(',')[a[t]].trim();
+                    totalPrice[t].push(productRowColumn++);
+                    // console.log('pppppppppppppppppppppppppppppppppppppppppppppp', productColumn)
+                }
+            }
+            // console.log(totalPrice);
+            var tot = ["","<b>Total Price:</b> "];
+        // Loop through each inner list
+            for (var i = 0; i < totalPrice.length; i++) {
+                var innerList = totalPrice[i];
+                // Initialize a variable to store the total of the current inner list
+                var innerListTotal = 0;
+                // Loop through each element in the inner list and add it to the total
+                for (var j = 0; j < innerList.length; j++) {
+                    innerListTotal += innerList[j];
+                }
+                // Add the total of the current inner list to the totals array
+                tot.push(parseFloat(innerListTotal.toFixed(2)));
+            }
+            // Display the totals
+            console.log(tot);
+            var u = newTable.insertRow(-1);
+            // var tailerRow = newTable.insertRow(-1);
+            for (var h = 0; h < tot.length; h++) {
+                
+                var cell = u.insertCell(-1);
+                cell.innerHTML = tot[h];
+            }
             break;
-
     }
-    // Add selected rows with all columns and values
-    // for (var j = 0; j < p.length; j++) {
-    //     // var selectedRow = selectedRows[j];
-    //     var product = rows[p[j]].split(',')[0].trim();
-    //     var newRow = newTable.insertRow(-1);
+    var plot = 'chartsd';
 
-    //     // Retrieve all data for the selected item from the CSV file
-    //     // var lines = csvData.split("\n");
-    //     for (var m = 0; m < lines.length; m++) {
-    //         var cells = lines[m].split(",");
-            
-    //         if (cells.length >= 2 && cells[0] === product) { 
-    //             var cell = newRow.insertCell(-1);
-    //             cell.innerHTML = cells[0];
-    //             var cell = newRow.insertCell(-1);
-    //             // cell.innerHTML = cells[1];
-    //             for(let r =0; r<lst3.length;r++){
-    //                 cell.innerHTML = lst3[lst3Index];
-    //                 // console.log('index',lst3Index)
-    //                 var lst2Index = lst3Index;
-    //                 lst3Index++;
-    //                 break;
-    //             }
-    //             // cell.innerHTML = measurement.trim().split(",")[m];
-    //             console.log('n',m)
-    //             for (var n = 0; n < a.length; n++) {
-    //                 var cell = newRow.insertCell(-1);
-    //                 // cell.innerHTML = cells[a[n]];
-    //                 for(let b =0; b<lst1.length;b++){
-    //                     cell.innerHTML = parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2));
-    //                     price.push(parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2)));
-    //                     // console.log('aaaaa', lst2Index);
-    //                     // lst2Index++;
-    //                     break;
-    //                 }
-    //                 // console.log('aaaaa',cells[a[n]])
-    //                 // prices.push(cells[a[n]]);
-    //             }
-    //             break;
-    //         }
-    //     }
-    //     // Add a heat map to each row
-    //     addHeatMapToRow(newRow);
-    // }
-
-
-
-
-
-    // console.log(price)
-    // var plot = 'chartsd';
-
-    // container.appendChild(newTable);
-    // createGPlot(plot,csvData, dates,a,p);
+    container.appendChild(newTable);
+    createGPlot(plot,csvData, dates,a,p);
+    
 }
+
+
 function getPrice(i){
     var pri = [];
     pri.push(i);
@@ -1171,11 +1153,7 @@ function createGPlot(plot, csvData, dates, a, p) {
             plotData.push(trace);
         }
     }
-    // Add traces for selected products
-    
-    // console.log(plotData)
 
-    // Layout for the plot
     var layout = {
         title: 'Product Prices Over Time',
         xaxis: {
@@ -1208,7 +1186,8 @@ function getProductData(product, csvData,a) {
                 for (var n = 0; n < a.length; n++) {
                     prices.push(cells[a[n]]);
                 }
-                console.log('pricesssssssssss', prices)
+                // console.log('pricesssssssssss', prices)
+
                 return prices;
                 
             }
