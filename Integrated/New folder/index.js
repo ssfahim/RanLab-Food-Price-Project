@@ -516,9 +516,6 @@ function populateMenu(container,lst, measurement,category) {
                 // var selectedRow = selectedRows[j];
                 var product = rows[p[j]].split(',')[0].trim();
                 var newRow = newTable.insertRow(-1);
-        
-                // Retrieve all data for the selected item from the CSV file
-                // var lines = csvData.split("\n");
                 for (var m = 0; m < lines.length; m++) {
                     var cells = lines[m].split(",");
                     
@@ -534,27 +531,14 @@ function populateMenu(container,lst, measurement,category) {
                             lst3Index++;
                             break;
                         }
-                        // cell.innerHTML = measurement.trim().split(",")[m];
-                        // console.log('n',m)
                         for (var n = 0; n < a.length; n++) {
                             var cell = newRow.insertCell(-1);
-                            // cell.innerHTML = cells[a[n]];
                             var u = parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2));
-                            // getPrice(u);
                             for(let b =0; b<lst1.length;b++){
                                 cell.innerHTML = parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2));
                                 price.push(parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2)));
-                                // getPrice(parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2)));
-                                // console.log('aaaaa', lst2Index);
-                                // lst2Index++;
-                                // getProductData(product, csvData, a);
                                 break;
                             }
-                            // var u = parseFloat(((cells[a[n]] * lst1[lst2Index]) / actualUnit[lst2Index]).toFixed(2));
-                            // getProductData(product, csvData, u)
-                            // getPrice(u);
-                            // console.log('aaaaa',cells[a[n]])
-                            // prices.push(cells[a[n]]);
                         }
                         break; 
                         
@@ -567,8 +551,6 @@ function populateMenu(container,lst, measurement,category) {
             console.log(price)
             
             var totalPrice = [[], [], [], [], [], [], []];
-
-            // Assuming you want to distribute the prices evenly to the inner arrays of totalPrice
             var rows = 7; // Number of rows
             var cols = 5; // Number of columns
             
@@ -580,6 +562,7 @@ function populateMenu(container,lst, measurement,category) {
             
             console.log(totalPrice);
             var tot = ["","<b>Total Price:</b> "];
+            var t = [];
             // Loop through each inner list
             for (var i = 0; i < totalPrice.length; i++) {
                 var innerList = totalPrice[i];
@@ -591,23 +574,28 @@ function populateMenu(container,lst, measurement,category) {
                 }
                 // Add the total of the current inner list to the totals array
                 tot.push(parseFloat(innerListTotal.toFixed(2)));
+                t.push(parseFloat(innerListTotal.toFixed(2)));
             }
-            // Display the totals
             console.log(tot);
+            console.log(t)
             var u = newTable.insertRow(-1);
             // var tailerRow = newTable.insertRow(-1);
             for (var h = 0; h < tot.length; h++) {
-                
                 var cell = u.insertCell(-1);
                 cell.innerHTML = tot[h];
+                addHeatMapToRow(u);
             }
+            // console.log('p--------------------------------> ', p.length)
+            var plot = 'chartsd';
+            container.appendChild(newTable);
+            createMPlot(plot, csvData, dates, a, p, t,price);
+            
             break;
         case 'storePrice':
             for (var j = 0; j < p.length; j++) {
                 // var selectedRow = selectedRows[j];
                 var product = rows[p[j]].split(',')[0].trim(); //name of the product
                 newRow = newTable.insertRow(-1);
-                // Retrieve all data for the selected item from the CSV file
                 // var lines = csvData.split("\n");
                 for (var m = 0; m < lines.length; m++) {
                     var cells = lines[m].split(",");
@@ -639,6 +627,7 @@ function populateMenu(container,lst, measurement,category) {
             }
             // console.log(totalPrice);
             var tot = ["","<b>Total Price:</b> "];
+            var t = [];
         // Loop through each inner list
             for (var i = 0; i < totalPrice.length; i++) {
                 var innerList = totalPrice[i];
@@ -650,31 +639,119 @@ function populateMenu(container,lst, measurement,category) {
                 }
                 // Add the total of the current inner list to the totals array
                 tot.push(parseFloat(innerListTotal.toFixed(2)));
+                t.push(parseFloat(innerListTotal.toFixed(2)));
+
             }
-            // Display the totals
             console.log(tot);
+            console.log(t)
             var u = newTable.insertRow(-1);
             // var tailerRow = newTable.insertRow(-1);
             for (var h = 0; h < tot.length; h++) {
-                
                 var cell = u.insertCell(-1);
                 cell.innerHTML = tot[h];
+                addHeatMapToRow(u);
             }
+            var plot = 'chartsd';
+            container.appendChild(newTable);
+            createMPlot(plot,csvData, dates,a,p,t);
             break;
     }
-    var plot = 'chartsd';
-
-    container.appendChild(newTable);
-    createGPlot(plot,csvData, dates,a,p);
     
 }
 
+function array(price){
+    var totalPrice = [[], [], [], [], [], [], []];
 
-function getPrice(i){
-    var pri = [];
-    pri.push(i);
-    // console.log('pri---->', pri)
-    return pri;
+    var rows = 7; // Number of rows
+    var cols = 5; // Number of columns
+
+    for (var i = 0; i < price.length; i++) {
+        var rowIndex = i % rows;
+        var colIndex = Math.floor(i / rows);
+        totalPrice[rowIndex][colIndex] = price[i];
+    }
+    var individualArrays = [];
+
+    for (var colIndex = 0; colIndex < totalPrice[0].length; colIndex++) {
+        var individualArray = [];
+        for (var rowIndex = 0; rowIndex < totalPrice.length; rowIndex++) {
+            individualArray.push(totalPrice[rowIndex][colIndex]);
+        }
+        individualArrays.push(individualArray);
+    }
+    // console.log(individualArrays)
+    return individualArrays;
+}
+
+
+function createMPlot(plot, csvData, dates, a, p, t,price){
+    var plotData = [];
+    var rows = csvData.trim().split('\n');
+    var category = document.getElementById('category').value;
+
+    for (var j = 0; j < p.length; j++) {
+        var product = rows[p[j]].split(',')[0].trim();
+        // Use getProductData to get the data for the product
+        if(category == 'menuPrice'){
+            var productData = array(price)[j];
+
+        }
+        else if(category == 'storePrice'){
+            var productData = getProductData(product, csvData, a);
+        }
+        
+        // getPrice();
+
+        if (productData) {
+            var trace = {
+                x: dates,
+                y: productData,
+                type: 'scatter',
+                mode: 'markers+lines',
+                name: product
+            };
+            plotData.push(trace);
+        }
+    }
+
+    var trace = {
+        x: dates,
+        y: t,
+        type: 'scatter',
+        mode: 'markers+lines',
+        name: 'Total Price',
+        line: {
+            color: 'black' , // Set the line color to black
+            width: 4 // Set
+        },
+        marker: {
+            size: 8 // Set the marker size to your desired value
+        }
+    };
+    plotData.push(trace);
+
+    console.log(t)
+
+    var layout = {
+        title: 'Product Prices Over Time',
+        xaxis: {
+            title: 'Time Period',
+            tickvals: [0, 1, 2, 3, 4, 5, 6,7,8,9,10,11],
+            ticktext: dates,
+            zeroline: true,
+            zerolinewidth: 2,
+            zerolinecolor: 'black'
+        },
+        yaxis: {
+            title: 'Price in dollars(CAD)',
+            zeroline: true,
+            zerolinewidth: 2,
+            zerolinecolor: 'black'
+        }
+    };
+    // Plot the data
+    Plotly.newPlot(plot, plotData, layout);
+
 }
 
 
@@ -692,12 +769,11 @@ function generateTable(){
 function createGPlot(plot, csvData, dates, a, p) {
     var plotData = [];
     var rows = csvData.trim().split('\n');
-    var category = document.getElementById('category').value;
     for (var j = 0; j < p.length; j++) {
         var product = rows[p[j]].split(',')[0].trim();
         // Use getProductData to get the data for the product
         var productData = getProductData(product, csvData, a);
-        getPrice();
+        // getPrice();
 
         if (productData) {
             var trace = {
