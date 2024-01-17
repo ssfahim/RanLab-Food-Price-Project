@@ -49,6 +49,16 @@ table {
     margin: 0 auto;
 }
 
+#headers h1 {
+    font-weight: bold;
+    font-size: 40px; /* You can adjust the size as needed */
+}
+
+#headers p {
+    font-weight: bold;
+    font-size: 20px;
+}
+
 th, td {
     border: 2px solid #ddd;
     padding: 8px;
@@ -57,12 +67,35 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
+
+#nice {
+    text-align: center;
+}
+
+span.grey {
+    background: #cccccc;
+    border-radius: 0.8em;
+    -moz-border-radius: 0.8em;
+    -webkit-border-radius: 0.8em;
+    color: #fff;
+    display: inline-block;
+    /* font-weight: bold; */
+    line-height: 1.6em;
+    margin-right: 15px;
+    text-align: center;
+    width: 1.6em; 
+  }
+
 .scrollable {
     max-height: 250px;
     overflow-y: scroll;
     /* margin-left: 5px; */
-    margin-right: calc(80% );
+    margin-right: calc(80%);
     width: 50%;
+    border: 2px solid #555;
+    border-top: 0px solid #ffffff;
+    color: rgb(0, 0, 0);
+    /* padding: 20px; */
 }
 .scrollable::-webkit-scrollbar {
     width: 15px; /* Set the width of the scrollbar */
@@ -134,22 +167,8 @@ button {
     margin-left: 2px;
     margin-bottom: 0%;
 }
-/* #menu-container {
-    margin-bottom: 20px; 
-    width: 100%;
-    height: 100vh;
-    background: #888;
-    position: relative;
-    overflow: hidden;
-}
-.menu {
-    margin-bottom: 20px; 
-    width: 100%;
-    height: 100vh;
-    background: #888;
-    position: relative;
-    overflow: hidden;
-} */
+
+
 #content {
     /* margin-right: 500px;  */
     padding: 20px;
@@ -179,6 +198,17 @@ button {
     height: 350px;
     width: 40%;
     overflow-y: auto;
+}
+
+#tableWork div#content div.scrollable th.boxed {
+    background-color: #333; 
+    color: rgb(0, 0, 0); 
+    padding: 20px;
+    text-align: center;
+    border: 5px solid #555; 
+    background-size: 210mm 297mm; 
+    max-width: 400mm;
+    margin: 0 auto;
 }
 
 /* Style for the close button */
@@ -238,9 +268,26 @@ button {
 </head>
 <body>
     <header id = 'headers'>
-        <h1>Average Retail Food Prices in NL (2017 - 2023) </h1>
-        <p>Source: Statistics Canada. (2023, December 1). <i>Table 18-10-0245-01 Monthly average retail prices for selected products.</i></p>
+        <h1>Average Retail Prices in Newfoundland and Labrador </h1>
+        <p>Explore how prices of common grocery items have changed over time!</p>
+        <!-- <p>Source: Statistics Canada. (2023, December 1). <i>Table 18-10-0245-01 Monthly average retail prices for selected products.</i></p> -->
     </header>
+
+    <div id = 'nice'>
+        <p><span class="grey">1</span>Choose Products
+            <span class="grey" style="margin-left: 15px;">2</span>Visualize Data
+            <span class="grey" style="margin-left: 15px;">3</span>Get Helpful Information</p>
+<!-- 
+        <h1><span class="grey">1</span>Choose Products</h1>
+
+        <h1><span class="grey">2</span>Visualize Data</h1>
+
+        <h1><span class="grey">3</span>Get Helpful Information</h1> -->
+        <h3 style="display: inline-block; padding: 10px; border: 2px solid #e0dfdf; 
+    border-right-width: 538px; background-color: #e0dfdf;">
+    To get started, select one or more items from the Product List below.</h3>
+    </div>
+    
 
     <!-- <button onclick="generateTable()">Populate table</button> -->
     <!-- <button onclick="glanceButton()">At a Glance</button> -->
@@ -258,26 +305,50 @@ button {
     </div> -->
 
     <div id="content" style="display: none;">
-        <div class="scrollable">
-            <table id="csvTable">
-                <!-- Table header -->
-                <thead>
-                    <tr>
-                        <!-- <th></th>  -->
-                    </tr>
-                </thead>
-                <!-- Table content will be dynamically generated here -->
-            </table>
+        <h3>Product List</h3>
+        <div>
+            <label for="atAGlance">Products:</label>
+            <select id="G" onchange="generateTable()">
+                <option value="none">See All Products</option>
+                <option value="Vegetables">Vegetables</option>
+                <option value="Meat">Meat</option>
+                <option value="Fruits">Fruits</option>
+                <option value="Frozen">Frozen Foods</option>
+                <option value="Dairy">Dairy</option>
+                <option value="Canned">Canned</option>
+            </select>
+            <button onclick="selectAll()">Select All</button>
+            <button onclick="deselectAll()">Deselect All</button>
+            <!-- <button onclick="resetPage()">Refresh</button> -->
+        </div>            
+        <i style="display: inline-block; padding: 10px; border: 2px solid #555; border-right: 242px solid #f2f2f2; border-bottom: 0px solid #f2f2f2; background-color: #f2f2f2;">Selected Products will be displayed below</i>
+        <div id = 'scroll' style="display: none;"> 
+            <div class="scrollable">
+                <!-- <th style="border: 2px solid #000; padding: 10px;">Selected Products will be displayed below</th> -->
+            
+                <table id="csvTable">
+            
+                    <thead>
+                    </thead>
+                    <!-- Table content will be dynamically generated here -->
+                </table>
+            </div>
         </div>
         
+        
         <div>
-            <label for="viewBy">View by:</label>
+            <h2>What type of price data would you like to display?</h2>
+            <p style="max-width: 75%;">Store Price: definition of what this is to go here so people know what it means. More text to take up space here.
+                Standard Price: definition of what this is to go here so people know what it means. More text to take up space here.
+                Monthly means this and this and this and Yearly means this and this and more text here to explain.</p>
+            <!-- <label for="viewBy">View by:</label> -->
             <select id="viewBy" onchange="updateAndVisualize()">
                 <option value="yearly">Yearly Store Price</option>
                 <option value="yearlyStan">Yearly Standard Price</option>
                 <option value="monthly">Monthly Store Price (Past 12 months)</option>
                 <option value="monthlyStan">Monthly Standard Price (Past 12 months)</option>
             </select>
+            <button onclick="updateAndVisualize()">Update & Visualize</button>
         </div>
         
         <div id="yearDropdown" style="display: none;">
@@ -293,15 +364,13 @@ button {
                 <option value="2023">2023</option>
             </select>
         </div>
-        <button onclick="updateAndVisualize()">Update & Visualize</button>
-        <button onclick="selectAll()">Select All</button>
-        <button onclick="deselectAll()">Deselect All</button>
+        
         <div id="selectedTable"></div>
         <div id="chart"></div>
     </div>
 </div>
 
-<div id = 'tableWork1'>
+<div id = 'tableWork1' style="display: none;">
     <p>The <b>At a Glance</b> section shows how much prices have changed for certain grocery products over the years. 
         It has yearly and monthly standard(price/kg) and store prices.</p>
     <!-- <button onclick="glanceButton()">At a Glance</button> -->
@@ -321,7 +390,6 @@ button {
                 <option value="Canned">Canned</option>
             </select>
             <button onclick="resetPage()">Refresh</button>
-
         </div>
         
         <div id="priceView" style="display: none;">
@@ -352,28 +420,6 @@ button {
     </div>
 </div>
 
-
-<!-- <div id="menu-container">
-    <div class="menu">
-        <h2>Christmas Dinner Menu</h2>
-        <ul>
-            <li>Appetizer: Roasted Chestnuts</li>
-            <li>Main Course: Roast Turkey with Stuffing</li>
-            <li>Side Dish: Mashed Potatoes</li>
-            <li>Dessert: Christmas Pudding</li>
-        </ul>
-    </div>
-
-    <div class="menu">
-        <h2>Special Occasion Menu</h2>
-        <ul>
-            <li>Appetizer: Shrimp Cocktail</li>
-            <li>Main Course: Filet Mignon</li>
-            <li>Side Dish: Garlic Parmesan Asparagus</li>
-            <li>Dessert: Chocolate Fondue</li>
-        </ul>
-    </div>
-</div> -->
 
 <div id = 'tableWork2'>
     <p>This <b>Recipe</b> section shows how much it would cost to make a certain dish in today's market compared to other 
@@ -421,6 +467,7 @@ button {
                 <li>Lemons 1 tablespoon(14.78 ml)</li>
                 <li>Butter 1/2 cup(118.5 ml)</li>
             </ul>
+            </ul>
         </div>
 
         <!-- <div class="menuBox" onclick="openMenu('ChristmasMenu')">
@@ -437,51 +484,169 @@ button {
     <div id="chartsd"></div>
 </div>
 
-<!-- <div id="selectedTable"></div>
-<div id="chart"></div> -->
-
 <script>
-    function populateTable(csv) {
-    // Split the CSV data into rows
-    var rows = csv.trim().split('\n');
-
-    // // Extract header (product names)
-    var headers = rows[0].split(',');
-
-    // Create HTML table
+    function populateTable() {
     var table = document.getElementById('csvTable');
 
-    // Create table header
-    var thead = document.createElement('thead');
-    var headerRow = document.createElement('tr');
-    var th = document.createElement('th');
-    th.textContent = headers[0].trim(); // Use only the first header
-    headerRow.appendChild(th);
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+    // Clear existing rows from the table
+    table.innerHTML = "";
 
-    // Create table body with product names
-    // var tbody = document.createElement('tbody');
-    var row = csv.split("\n");
-    for (var i = 2; i < row.length; i++) {
-        var rowData = row[i].split(',');
-        if(rowData.length>= 2){
-            var productName = rowData[0].trim(); // Use only the first column data
-            var rop = table.insertRow(-1);
+    var category = document.getElementById('G').value;
+    // document.getElementById('scroll').style.display = "block";
 
-            // Add checkbox column
-            var cellCheckbox = rop.insertCell(0);
-            cellCheckbox.innerHTML = '<input type="checkbox">';
+    switch(category){
+        case "Vegetables":
+            var k = veg.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
 
-            // Add product column
-            var cellProduct = rop.insertCell(-1);
-            cellProduct.innerHTML = rowData[0];
-        }
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+            
+        case "Meat":
+            var s = meat.trim().split(',');
+            var k = meat.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Fruits":
+            var t = fruit.trim().split(',');
+            var k = fruit.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Frozen":
+            var u = froz.trim().split(',');
+            var k = froz.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Dairy":
+            var v = dairy.trim().split(',');
+            var k = dairy.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Canned":
+            var w = canned.trim().split(',');
+            var k = canned.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        default:
+            document.getElementById('scroll').style.display = "block";
+            var row = csvData.split("\n");
+            for (var i = 2; i < row.length; i++) {
+                var rowData = row[i].split(',');
+                if(rowData.length>= 2){
+                    var productName = rowData[0].trim(); // Use only the first column data
+                    var rop = table.insertRow(-1);
+
+                    // Add checkbox column
+                    var cellCheckbox = rop.insertCell(0);
+                    cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                    // Add product column
+                    var cellProduct = rop.insertCell(-1);
+                    cellProduct.innerHTML = rowData[0];
+                }
+            }
+            break;
     }
 }
 
+
+
 function generateTable(){
-    populateTable(csvData);
+    populateTable();
     // var contentElement = document.getElementById('content');
     // console.log(contentElement)
     // contentElement.style.display = (contentElement.style.display === "block") ? "none" : "block";
@@ -490,6 +655,11 @@ function generateTable(){
     document.getElementById('btn').style.display = "block";
     document.getElementById('glance').style.display = "none";
     document.getElementById("menuWindow").style.display = "none";
+
+
+    var category = document.getElementById('G').value;
+
+
 }
 // function hideTable(){
 //     // document.getElementById('content').style.display = "none";
@@ -756,8 +926,10 @@ function createPlot(selectedRows, csvData, dates,a ) {
     }
     // Layout for the plot
     var layout = {
-        title: 'Product Prices Over Time',
-        xaxis: {
+        title: '<span style="font-weight: bold; font-size: 1.5em;">Average Retail Prices in Newfoundland and Labrador (2017-2023)</span><br>' +
+        '<span style="font-size: 1em;">Note about what the colors mean here. Darker means this and lighter color implies this. <br>' +
+        'Note about Kg and dollar amount. Should be clear how someone would summarize in a sentence what they’re looking at.</span><br>',
+         xaxis: {
             title: 'Time Period',
             tickvals: [0, 1, 2, 3, 4, 5, 6,7,8,9,10,11],
             ticktext: dates,
@@ -1197,6 +1369,8 @@ function createMPlot(plot, csvData, dates, a, p, t,price){
 
 }
 
+
+
 function closeMenu() {
     var menuWindow = document.getElementById("menuWindow");
     menuWindow.style.display = "none";
@@ -1210,11 +1384,11 @@ function generateTable(){
 function createGPlot(plot, csvData, dates, a, p) {
     var plotData = [];
     var rows = csvData.trim().split('\n');
-    var category = document.getElementById('category').value;
     for (var j = 0; j < p.length; j++) {
         var product = rows[p[j]].split(',')[0].trim();
         // Use getProductData to get the data for the product
         var productData = getProductData(product, csvData, a);
+        // getPrice();
 
         if (productData) {
             var trace = {
@@ -1797,6 +1971,10 @@ Laundry detergent,per liter,2.13,3.36,3.79,1.86,2.37,3.44,2.03,2.63,1.79,2.49,3.
 
 
 `;
+
+
+
+
 </script>
 </body>
 </html>
