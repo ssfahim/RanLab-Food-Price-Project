@@ -1,44 +1,165 @@
-function populateTable(csv) {
-    // Split the CSV data into rows
-    var rows = csv.trim().split('\n');
-
-    // // Extract header (product names)
-    var headers = rows[0].split(',');
-
-    // Create HTML table
+function populateTable() {
     var table = document.getElementById('csvTable');
 
-    // Create table header
-    var thead = document.createElement('thead');
-    var headerRow = document.createElement('tr');
-    var th = document.createElement('th');
-    th.textContent = headers[0].trim(); // Use only the first header
-    headerRow.appendChild(th);
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+    // Clear existing rows from the table
+    table.innerHTML = "";
 
-    // Create table body with product names
-    // var tbody = document.createElement('tbody');
-    var row = csv.split("\n");
-    for (var i = 2; i < row.length; i++) {
-        var rowData = row[i].split(',');
-        if(rowData.length>= 2){
-            var productName = rowData[0].trim(); // Use only the first column data
-            var rop = table.insertRow(-1);
+    var category = document.getElementById('G').value;
+    // document.getElementById('scroll').style.display = "block";
 
-            // Add checkbox column
-            var cellCheckbox = rop.insertCell(0);
-            cellCheckbox.innerHTML = '<input type="checkbox">';
+    switch(category){
+        case "Vegetables":
+            var k = veg.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
 
-            // Add product column
-            var cellProduct = rop.insertCell(-1);
-            cellProduct.innerHTML = rowData[0];
-        }
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+            
+        case "Meat":
+            var s = meat.trim().split(',');
+            var k = meat.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Fruits":
+            var t = fruit.trim().split(',');
+            var k = fruit.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Frozen":
+            var u = froz.trim().split(',');
+            var k = froz.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Dairy":
+            var v = dairy.trim().split(',');
+            var k = dairy.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        case "Canned":
+            var w = canned.trim().split(',');
+            var k = canned.trim().split(',');
+            document.getElementById('scroll').style.display = "block";
+            // console.log(category)
+            // var k = selectProduct(category);
+            console.log(k)
+            for (var i = 0; i < k.length; i++) {
+                var rowData = k;
+                var rop = table.insertRow(-1);
+                // Add checkbox column
+                var cellCheckbox = rop.insertCell(0);
+                cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                // Add product column
+                var cellProduct = rop.insertCell(-1);
+                cellProduct.innerHTML = k[i];
+                console.log(k[i])
+            }
+            // console.log(p)
+            break;
+        default:
+            document.getElementById('scroll').style.display = "block";
+            var row = csvData.split("\n");
+            for (var i = 2; i < row.length; i++) {
+                var rowData = row[i].split(',');
+                if(rowData.length>= 2){
+                    var productName = rowData[0].trim(); // Use only the first column data
+                    var rop = table.insertRow(-1);
+
+                    // Add checkbox column
+                    var cellCheckbox = rop.insertCell(0);
+                    cellCheckbox.innerHTML = '<input type="checkbox">';
+
+                    // Add product column
+                    var cellProduct = rop.insertCell(-1);
+                    cellProduct.innerHTML = rowData[0];
+                }
+            }
+            break;
     }
 }
 
+
+
 function generateTable(){
-    populateTable(csvData);
+    populateTable();
     // var contentElement = document.getElementById('content');
     // console.log(contentElement)
     // contentElement.style.display = (contentElement.style.display === "block") ? "none" : "block";
@@ -47,6 +168,11 @@ function generateTable(){
     document.getElementById('btn').style.display = "block";
     document.getElementById('glance').style.display = "none";
     document.getElementById("menuWindow").style.display = "none";
+
+
+    var category = document.getElementById('G').value;
+
+
 }
 // function hideTable(){
 //     // document.getElementById('content').style.display = "none";
@@ -313,8 +439,10 @@ function createPlot(selectedRows, csvData, dates,a ) {
     }
     // Layout for the plot
     var layout = {
-        title: 'Product Prices Over Time',
-        xaxis: {
+        title: '<span style="font-weight: bold; font-size: 1.5em;">Average Retail Prices in Newfoundland and Labrador (2017-2023)</span><br><br>' +
+        '<span style="font-size: 1em;">Note about what the colors mean here. Darker means this and lighter color implies this. <br>' +
+        'Note about Kg and dollar amount. Should be clear how someone would summarize in a sentence what they’re looking at.</span>',
+         xaxis: {
             title: 'Time Period',
             tickvals: [0, 1, 2, 3, 4, 5, 6,7,8,9,10,11],
             ticktext: dates,
