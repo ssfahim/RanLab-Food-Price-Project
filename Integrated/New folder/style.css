@@ -41,6 +41,16 @@ table {
     margin: 0 auto;
 }
 
+#headers h1 {
+    font-weight: bold;
+    font-size: 40px; /* You can adjust the size as needed */
+}
+
+#headers p {
+    font-weight: bold;
+    font-size: 20px;
+}
+
 th, td {
     border: 2px solid #ddd;
     padding: 8px;
@@ -49,12 +59,35 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
+
+#nice {
+    text-align: center;
+}
+
+span.grey {
+    background: #cccccc;
+    border-radius: 0.8em;
+    -moz-border-radius: 0.8em;
+    -webkit-border-radius: 0.8em;
+    color: #fff;
+    display: inline-block;
+    /* font-weight: bold; */
+    line-height: 1.6em;
+    margin-right: 15px;
+    text-align: center;
+    width: 1.6em; 
+  }
+
 .scrollable {
     max-height: 250px;
     overflow-y: scroll;
     /* margin-left: 5px; */
-    margin-right: calc(80% );
+    margin-right: calc(80%);
     width: 50%;
+    border: 2px solid #555;
+    border-top: 0px solid #ffffff;
+    color: rgb(0, 0, 0);
+    /* padding: 20px; */
 }
 .scrollable::-webkit-scrollbar {
     width: 15px; /* Set the width of the scrollbar */
@@ -126,22 +159,8 @@ button {
     margin-left: 2px;
     margin-bottom: 0%;
 }
-/* #menu-container {
-    margin-bottom: 20px; 
-    width: 100%;
-    height: 100vh;
-    background: #888;
-    position: relative;
-    overflow: hidden;
-}
-.menu {
-    margin-bottom: 20px; 
-    width: 100%;
-    height: 100vh;
-    background: #888;
-    position: relative;
-    overflow: hidden;
-} */
+
+
 #content {
     /* margin-right: 500px;  */
     padding: 20px;
@@ -171,6 +190,17 @@ button {
     height: 350px;
     width: 40%;
     overflow-y: auto;
+}
+
+#tableWork div#content div.scrollable th.boxed {
+    background-color: #333; 
+    color: rgb(0, 0, 0); 
+    padding: 20px;
+    text-align: center;
+    border: 5px solid #555; 
+    background-size: 210mm 297mm; 
+    max-width: 400mm;
+    margin: 0 auto;
 }
 
 /* Style for the close button */
